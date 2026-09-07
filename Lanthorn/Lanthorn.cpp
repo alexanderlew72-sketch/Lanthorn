@@ -252,6 +252,18 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
+    SDL_Texture* stump2Texture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Stump2-Sheet.png"
+    );
+
+    if (stump2Texture == nullptr)
+    {
+        std::cout << "Stump 2 failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
     if (treeFallingRightTexture == nullptr)
     {
         std::cout << "Tree falling right failed to load: "
@@ -1606,12 +1618,32 @@ int main(int argc, char* argv[])
                     stumpRect.x = treeRects[i].x;
                     stumpRect.y = treeRects[i].y;
 
-                    SDL_RenderCopy(
-                        renderer,
-                        stump1Texture,
-                        nullptr,
-                        &stumpRect
-                    );
+                    int playerBottom =
+                        playerCollisionRect.y + playerCollisionRect.h;
+
+                    int stumpBottom =
+                        treeCollisionRects[i].y + treeCollisionRects[i].h;
+
+                    if (playerBottom >= stumpBottom)
+                    {
+                        SDL_Texture* stumpTexture;
+
+                        if (treeTypes[i] == 0)
+                        {
+                            stumpTexture = stump1Texture;
+                        }
+                        else
+                        {
+                            stumpTexture = stump2Texture;
+                        }
+
+                        SDL_RenderCopy(
+                            renderer,
+                            stumpTexture,
+                            nullptr,
+                            &stumpRect
+                        );
+                    }
                 }
 
                 // TREE IS CURRENTLY FALLING
@@ -1724,7 +1756,44 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < 6; i++)
             {
-                if (!treeFalling[i] && !treeFallen[i])
+                if (treeFallen[i])
+                {
+                    int playerBottom =
+                        playerCollisionRect.y + playerCollisionRect.h;
+
+                    int stumpBottom =
+                        treeCollisionRects[i].y + treeCollisionRects[i].h;
+
+                    if (playerBottom < stumpBottom)
+                    {
+                        SDL_Rect stumpRect;
+
+                        stumpRect.w = 140;
+                        stumpRect.h = 356;
+
+                        stumpRect.x = treeRects[i].x;
+                        stumpRect.y = treeRects[i].y;
+
+                        SDL_Texture* stumpTexture;
+
+                        if (treeTypes[i] == 0)
+                        {
+                            stumpTexture = stump1Texture;
+                        }
+                        else
+                        {
+                            stumpTexture = stump2Texture;
+                        }
+
+                        SDL_RenderCopy(
+                            renderer,
+                            stumpTexture,
+                            nullptr,
+                            &stumpRect
+                        );
+                    }
+                }
+                else if (!treeFalling[i] && !treeFallen[i])
                 {
                     bool playerUnderTree =
                         CheckCollision(player, treeRects[i]) &&
