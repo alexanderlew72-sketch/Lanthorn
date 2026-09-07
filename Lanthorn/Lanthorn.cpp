@@ -1621,10 +1621,18 @@ int main(int argc, char* argv[])
                     int playerBottom =
                         playerCollisionRect.y + playerCollisionRect.h;
 
+
                     int stumpBottom =
                         treeCollisionRects[i].y + treeCollisionRects[i].h;
 
-                    if (playerBottom >= stumpBottom)
+                    bool playerOverlapsStumpX =
+                        playerCollisionRect.x + playerCollisionRect.w >
+                        treeCollisionRects[i].x &&
+                        playerCollisionRect.x <
+                        treeCollisionRects[i].x + treeCollisionRects[i].w;
+
+                    if (!playerOverlapsStumpX ||
+                        playerBottom >= stumpBottom)
                     {
                         SDL_Texture* stumpTexture;
 
@@ -1764,7 +1772,14 @@ int main(int argc, char* argv[])
                     int stumpBottom =
                         treeCollisionRects[i].y + treeCollisionRects[i].h;
 
-                    if (playerBottom < stumpBottom)
+                    bool playerOverlapsStumpX =
+                        playerCollisionRect.x + playerCollisionRect.w >
+                        treeCollisionRects[i].x &&
+                        playerCollisionRect.x <
+                        treeCollisionRects[i].x + treeCollisionRects[i].w;
+
+                    if (playerOverlapsStumpX &&
+                        playerBottom < stumpBottom)
                     {
                         SDL_Rect stumpRect;
 
