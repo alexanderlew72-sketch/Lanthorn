@@ -228,6 +228,17 @@ int main(int argc, char* argv[])
             << IMG_GetError()
             << std::endl;
     }
+    SDL_Texture* tree2FallingRightTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Tree2FallingRight-Sheet.png"
+    );
+
+    if (tree2FallingRightTexture == nullptr)
+    {
+        std::cout << "Tree 2 falling right failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
 
     SDL_Texture* stump1Texture = IMG_LoadTexture(
         renderer,
@@ -1618,37 +1629,32 @@ int main(int argc, char* argv[])
                     treeFallRect.w = 416;
                     treeFallRect.h = 356;
 
-                    if (treeFallDirection[i] == 0)
+                    SDL_Texture* fallingTexture;
+                    
+                    if (treeTypes[i] == 0)
                     {
-                        // Falling RIGHT:
-                        // first 35 pixels stay lined up with original tree
-                        treeFallRect.x = treeRects[i].x;
+                        // TREE 1
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = treeFallingRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = treeFallingLeftTexture;
+                        }
                     }
                     else
                     {
-                        // Falling LEFT:
-                        // last 35 pixels stay lined up with original tree
-                        treeFallRect.x =
-                            treeRects[i].x - ((104 - 35) * 4);
+                        // TREE 2
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = tree2FallingRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = tree2FallingLeftTexture;
+                        }
                     }
-
-                    treeFallRect.y = treeRects[i].y;
-                    SDL_Texture* fallingTexture;
-if (treeFallDirection[i] == 0)
-{
-    fallingTexture = treeFallingRightTexture;
-}
-else
-{
-    if (treeTypes[i] == 0)
-    {
-        fallingTexture = treeFallingLeftTexture;
-    }
-    else
-    {
-        fallingTexture = tree2FallingLeftTexture;
-    }
-}
 
                     SDL_RenderCopy(
                         renderer,
