@@ -217,6 +217,17 @@ int main(int argc, char* argv[])
             << IMG_GetError()
             << std::endl;
     }
+    SDL_Texture* tree2FallingLeftTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Tree2FallingLeft-Sheet.png"
+    );
+
+    if (tree2FallingLeftTexture == nullptr)
+    {
+        std::cout << "Tree 2 falling left failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
 
     SDL_Texture* stump1Texture = IMG_LoadTexture(
         renderer,
