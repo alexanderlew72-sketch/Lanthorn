@@ -347,29 +347,57 @@ int main(int argc, char* argv[])
         false, false, false
     };
 
+    SDL_Rect playerSpawnRect;
+
+    playerSpawnRect.x = 615;
+    playerSpawnRect.y = 335;
+    playerSpawnRect.w = 96;
+    playerSpawnRect.h = 96;
+
     for (int i = 0; i < 6; i++)
     {
-        treeRects[i].w = 140;
-        treeRects[i].h = 356;
+        bool validPosition = false;
 
-        treeRects[i].x = 100 + (std::rand() % 1080);
-        treeRects[i].y = 50 + (std::rand() % 450);
+        while (!validPosition)
+        {
+            treeRects[i].w = 140;
+            treeRects[i].h = 356;
+
+            treeRects[i].x = 100 + (std::rand() % 1080);
+            treeRects[i].y = 50 + (std::rand() % 310);
+
+            validPosition = true;
+
+            // Do not spawn on the player.
+            if (CheckCollision(treeRects[i], playerSpawnRect))
+            {
+                validPosition = false;
+            }
+
+            // Do not spawn on another tree.
+            for (int j = 0; j < i; j++)
+            {
+                if (CheckCollision(treeRects[i], treeRects[j]))
+                {
+                    validPosition = false;
+                    break;
+                }
+            }
+        }
 
         treeTypes[i] = std::rand() % 2;
 
-
-        // TREE COLLISION RECTANGLE
         treeCollisionRects[i].w = 56;
-            treeCollisionRects[i].h = 56;
+        treeCollisionRects[i].h = 56;
 
-        // Center the collision box horizontally
         treeCollisionRects[i].x =
-            treeRects[i].x + (treeRects[i].w - treeCollisionRects[i].w) / 2;
+            treeRects[i].x +
+            (treeRects[i].w - treeCollisionRects[i].w) / 2;
 
-        // Put the collision box at the very bottom of the tree
         treeCollisionRects[i].y =
-            treeRects[i].y + treeRects[i].h - treeCollisionRects[i].h;
-    
+            treeRects[i].y +
+            treeRects[i].h -
+            treeCollisionRects[i].h;
     }
 
     SDL_Rect hotbarHighlightSource;
