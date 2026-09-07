@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     SDL_Renderer* renderer = SDL_CreateRenderer(
         window,
         -1,
-        SDL_RENDERER_ACCELERATED
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
 
     SDL_RenderSetLogicalSize(
@@ -686,7 +686,7 @@ int main(int argc, char* argv[])
 
 
     // Movement speed
-    float playerSpeed = .2f;
+    float playerSpeed = 2.5f;
 
     bool isMoving = false;
 
@@ -1683,68 +1683,7 @@ int main(int argc, char* argv[])
                 }
 
                 // TREE IS CURRENTLY FALLING
-                else if (treeFalling[i])
-                {
-                    SDL_Rect treeFallSourceRect;
-
-                    treeFallSourceRect.x = treeFallFrame[i] * 104;
-                    treeFallSourceRect.y = 0;
-                    treeFallSourceRect.w = 104;
-                    treeFallSourceRect.h = 89;
-
-                    SDL_Rect treeFallRect;
-
-                    treeFallRect.w = 416;
-                    treeFallRect.h = 356;
-
-                    if (treeFallDirection[i] == 0)
-                    {
-                        // Falling RIGHT
-                        treeFallRect.x = treeRects[i].x;
-                    }
-                    else
-                    {
-                        // Falling LEFT
-                        treeFallRect.x =
-                            treeRects[i].x - ((104 - 35) * 4);
-                    }
-
-                    treeFallRect.y = treeRects[i].y;
-
-                    SDL_Texture* fallingTexture;
-                    
-                    if (treeTypes[i] == 0)
-                    {
-                        // TREE 1
-                        if (treeFallDirection[i] == 0)
-                        {
-                            fallingTexture = treeFallingRightTexture;
-                        }
-                        else
-                        {
-                            fallingTexture = treeFallingLeftTexture;
-                        }
-                    }
-                    else
-                    {
-                        // TREE 2
-                        if (treeFallDirection[i] == 0)
-                        {
-                            fallingTexture = tree2FallingRightTexture;
-                        }
-                        else
-                        {
-                            fallingTexture = tree2FallingLeftTexture;
-                        }
-                    }
-
-                    SDL_RenderCopy(
-                        renderer,
-                        fallingTexture,
-                        &treeFallSourceRect,
-                        &treeFallRect
-                    );
-                }
+           
 
                 // TREE IS STILL STANDING
                 else
@@ -1792,7 +1731,66 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < 6; i++)
             {
-                if (treeFallen[i])
+
+                if (treeFalling[i])
+                {
+                    SDL_Rect treeFallSourceRect;
+
+                    treeFallSourceRect.x = treeFallFrame[i] * 104;
+                    treeFallSourceRect.y = 0;
+                    treeFallSourceRect.w = 104;
+                    treeFallSourceRect.h = 89;
+
+                    SDL_Rect treeFallRect;
+
+                    treeFallRect.w = 416;
+                    treeFallRect.h = 356;
+
+                    if (treeFallDirection[i] == 0)
+                    {
+                        treeFallRect.x = treeRects[i].x;
+                    }
+                    else
+                    {
+                        treeFallRect.x =
+                            treeRects[i].x - ((104 - 35) * 4);
+                    }
+
+                    treeFallRect.y = treeRects[i].y;
+
+                    SDL_Texture* fallingTexture;
+
+                    if (treeTypes[i] == 0)
+                    {
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = treeFallingRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = treeFallingLeftTexture;
+                        }
+                    }
+                    else
+                    {
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = tree2FallingRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = tree2FallingLeftTexture;
+                        }
+                    }
+
+                    SDL_RenderCopy(
+                        renderer,
+                        fallingTexture,
+                        &treeFallSourceRect,
+                        &treeFallRect
+                    );
+                }
+                else if (treeFallen[i])
                 {
                     int playerBottom =
                         playerCollisionRect.y + playerCollisionRect.h;
