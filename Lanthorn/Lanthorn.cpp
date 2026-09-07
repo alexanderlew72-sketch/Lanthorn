@@ -1629,6 +1629,20 @@ int main(int argc, char* argv[])
                     treeFallRect.w = 416;
                     treeFallRect.h = 356;
 
+                    if (treeFallDirection[i] == 0)
+                    {
+                        // Falling RIGHT
+                        treeFallRect.x = treeRects[i].x;
+                    }
+                    else
+                    {
+                        // Falling LEFT
+                        treeFallRect.x =
+                            treeRects[i].x - ((104 - 35) * 4);
+                    }
+
+                    treeFallRect.y = treeRects[i].y;
+
                     SDL_Texture* fallingTexture;
                     
                     if (treeTypes[i] == 0)
