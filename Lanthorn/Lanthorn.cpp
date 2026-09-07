@@ -1003,75 +1003,77 @@ int main(int argc, char* argv[])
                                     // Only hit one tree per swing
                                     break;
                                 }
-                                // PLAYER IS ABOVE TREE, FACING DOWN
-                                if (playerDirection == 0)
+                     
+                            }
+                        }
+                    }
+                    // PLAYER IS ABOVE TREE, FACING DOWN
+                    if (playerDirection == 0)
+                    {
+                        SDL_Rect axeHitRect;
+
+                        axeHitRect.w = 60;
+                        axeHitRect.h = 60;
+
+                        axeHitRect.x =
+                            playerCollisionRect.x +
+                            (playerCollisionRect.w - axeHitRect.w) / 2;
+
+                        axeHitRect.y =
+                            playerCollisionRect.y +
+                            playerCollisionRect.h;
+
+                        for (int i = 0; i < 6; i++)
+                        {
+                            if (treeTypes[i] == 0 &&
+                                !treeFalling[i] &&
+                                !treeFallen[i])
+                            {
+                                if (CheckCollision(
+                                    axeHitRect,
+                                    treeCollisionRects[i]
+                                ))
                                 {
-                                    SDL_Rect axeHitRect;
+                                    treeHitThisSwing = i;
+                                    treeRandomFall[i] = true;
 
-                                    axeHitRect.w = 60;
-                                    axeHitRect.h = 60;
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
-                                    axeHitRect.x =
-                                        playerCollisionRect.x +
-                                        (playerCollisionRect.w - axeHitRect.w) / 2;
+                    // PLAYER IS BELOW TREE, FACING UP
+                    if (playerDirection == 1)
+                    {
+                        SDL_Rect axeHitRect;
 
-                                    axeHitRect.y =
-                                        playerCollisionRect.y +
-                                        playerCollisionRect.h;
+                        axeHitRect.w = 60;
+                        axeHitRect.h = 60;
 
-                                    for (int i = 0; i < 6; i++)
-                                    {
-                                        if (treeTypes[i] == 0 &&
-                                            !treeFalling[i] &&
-                                            !treeFallen[i])
-                                        {
-                                            if (CheckCollision(
-                                                axeHitRect,
-                                                treeCollisionRects[i]
-                                            ))
-                                            {
-                                                treeHitThisSwing = i;
-                                                treeRandomFall[i] = true;
+                        axeHitRect.x =
+                            playerCollisionRect.x +
+                            (playerCollisionRect.w - axeHitRect.w) / 2;
 
-                                                break;
-                                            }
-                                            // PLAYER IS BELOW TREE, FACING UP
-                                            if (playerDirection == 1)
-                                            {
-                                                SDL_Rect axeHitRect;
+                        axeHitRect.y =
+                            playerCollisionRect.y -
+                            axeHitRect.h;
 
-                                                axeHitRect.w = 60;
-                                                axeHitRect.h = 60;
+                        for (int i = 0; i < 6; i++)
+                        {
+                            if (treeTypes[i] == 0 &&
+                                !treeFalling[i] &&
+                                !treeFallen[i])
+                            {
+                                if (CheckCollision(
+                                    axeHitRect,
+                                    treeCollisionRects[i]
+                                ))
+                                {
+                                    treeHitThisSwing = i;
+                                    treeRandomFall[i] = true;
 
-                                                axeHitRect.x =
-                                                    playerCollisionRect.x +
-                                                    (playerCollisionRect.w - axeHitRect.w) / 2;
-
-                                                axeHitRect.y =
-                                                    playerCollisionRect.y -
-                                                    axeHitRect.h;
-
-                                                for (int i = 0; i < 6; i++)
-                                                {
-                                                    if (treeTypes[i] == 0 &&
-                                                        !treeFalling[i] &&
-                                                        !treeFallen[i])
-                                                    {
-                                                        if (CheckCollision(
-                                                            axeHitRect,
-                                                            treeCollisionRects[i]
-                                                        ))
-                                                        {
-                                                            treeHitThisSwing = i;
-                                                            treeRandomFall[i] = true;
-
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    break;
                                 }
                             }
                         }
