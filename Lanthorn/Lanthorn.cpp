@@ -307,6 +307,12 @@ int main(int argc, char* argv[])
 
     int treeFallDirection[6] = { 0, 0, 0, 0, 0, 0 };
 
+    bool treeRandomFall[6] =
+    {
+        false, false, false,
+        false, false, false
+    };
+
     for (int i = 0; i < 6; i++)
     {
         treeRects[i].w = 140;
@@ -319,8 +325,8 @@ int main(int argc, char* argv[])
 
 
         // TREE COLLISION RECTANGLE
-        treeCollisionRects[i].w = 100;
-        treeCollisionRects[i].h = 68;
+        treeCollisionRects[i].w = 56;
+            treeCollisionRects[i].h = 56;
 
         // Center the collision box horizontally
         treeCollisionRects[i].x =
@@ -919,7 +925,7 @@ int main(int argc, char* argv[])
 
     for (int i = 0; i < 6; i++)
     {
-        treeFallDirection[i] = 0;
+       
 
         if (treeTypes[i] == 0 &&
             !treeFalling[i] &&
@@ -943,7 +949,8 @@ int main(int argc, char* argv[])
             )
             {
                 treeHitThisSwing = i;
-                treeFallDirection[i] = 1;
+                treeFallDirection[i] = 0;
+                treeRandomFall[i] = false;
 
                 break;
             }
@@ -992,9 +999,79 @@ int main(int argc, char* argv[])
                                 {
                                     treeHitThisSwing = i;
                                     treeFallDirection[i] = 0;
-
+                                    treeRandomFall[i] = false;
                                     // Only hit one tree per swing
                                     break;
+                                }
+                                // PLAYER IS ABOVE TREE, FACING DOWN
+                                if (playerDirection == 0)
+                                {
+                                    SDL_Rect axeHitRect;
+
+                                    axeHitRect.w = 60;
+                                    axeHitRect.h = 60;
+
+                                    axeHitRect.x =
+                                        playerCollisionRect.x +
+                                        (playerCollisionRect.w - axeHitRect.w) / 2;
+
+                                    axeHitRect.y =
+                                        playerCollisionRect.y +
+                                        playerCollisionRect.h;
+
+                                    for (int i = 0; i < 6; i++)
+                                    {
+                                        if (treeTypes[i] == 0 &&
+                                            !treeFalling[i] &&
+                                            !treeFallen[i])
+                                        {
+                                            if (CheckCollision(
+                                                axeHitRect,
+                                                treeCollisionRects[i]
+                                            ))
+                                            {
+                                                treeHitThisSwing = i;
+                                                treeRandomFall[i] = true;
+
+                                                break;
+                                            }
+                                            // PLAYER IS BELOW TREE, FACING UP
+                                            if (playerDirection == 1)
+                                            {
+                                                SDL_Rect axeHitRect;
+
+                                                axeHitRect.w = 60;
+                                                axeHitRect.h = 60;
+
+                                                axeHitRect.x =
+                                                    playerCollisionRect.x +
+                                                    (playerCollisionRect.w - axeHitRect.w) / 2;
+
+                                                axeHitRect.y =
+                                                    playerCollisionRect.y -
+                                                    axeHitRect.h;
+
+                                                for (int i = 0; i < 6; i++)
+                                                {
+                                                    if (treeTypes[i] == 0 &&
+                                                        !treeFalling[i] &&
+                                                        !treeFallen[i])
+                                                    {
+                                                        if (CheckCollision(
+                                                            axeHitRect,
+                                                            treeCollisionRects[i]
+                                                        ))
+                                                        {
+                                                            treeHitThisSwing = i;
+                                                            treeRandomFall[i] = true;
+
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1374,6 +1451,25 @@ int main(int argc, char* argv[])
                 {
                     currentFrame = 0;
                     axeSwinging = false;
+
+                    if (treeHitThisSwing != -1)
+                    {
+                        treeHits[treeHitThisSwing]++;
+
+                        if (treeHits[treeHitThisSwing] >= 5)
+                        {
+                            if (treeRandomFall[treeHitThisSwing])
+                            {
+                                treeFallDirection[treeHitThisSwing] =
+                                    std::rand() % 2;
+                            }
+
+                            treeFalling[treeHitThisSwing] = true;
+                            treeFallFrame[treeHitThisSwing] = 0;
+                        }
+
+                        treeHitThisSwing = -1;
+                    }
                 }
 
                 lastFrameTime = currentTime;
@@ -1873,4 +1969,4 @@ int main(int argc, char* argv[])
     SDL_Quit();
 
     return 0;
-}
+    }
