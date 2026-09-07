@@ -1634,15 +1634,21 @@ int main(int argc, char* argv[])
 
                     treeFallRect.y = treeRects[i].y;
                     SDL_Texture* fallingTexture;
-
-                    if (treeFallDirection[i] == 0)
-                    {
-                        fallingTexture = treeFallingRightTexture;
-                    }
-                    else
-                    {
-                        fallingTexture = treeFallingLeftTexture;
-                    }
+if (treeFallDirection[i] == 0)
+{
+    fallingTexture = treeFallingRightTexture;
+}
+else
+{
+    if (treeTypes[i] == 0)
+    {
+        fallingTexture = treeFallingLeftTexture;
+    }
+    else
+    {
+        fallingTexture = tree2FallingLeftTexture;
+    }
+}
 
                     SDL_RenderCopy(
                         renderer,
