@@ -938,7 +938,7 @@ int main(int argc, char* argv[])
     {
        
 
-        if (treeTypes[i] == 0 &&
+        if (
             !treeFalling[i] &&
             !treeFallen[i])
         {
@@ -960,7 +960,7 @@ int main(int argc, char* argv[])
             )
             {
                 treeHitThisSwing = i;
-                treeFallDirection[i] = 0;
+                treeFallDirection[i] = 1;
                 treeRandomFall[i] = false;
 
                 break;
@@ -989,7 +989,7 @@ int main(int argc, char* argv[])
                         for (int i = 0; i < 6; i++)
                         {
                             // treeTypes[i] == 0 means Tree 1
-                            if (treeTypes[i] == 0 && !treeFalling[i])
+                            if (!treeFalling[i] && !treeFallen[i])
                             {
                                 int playerCenterX =
                                     playerCollisionRect.x +
@@ -1036,7 +1036,7 @@ int main(int argc, char* argv[])
 
                         for (int i = 0; i < 6; i++)
                         {
-                            if (treeTypes[i] == 0 &&
+                            if (
                                 !treeFalling[i] &&
                                 !treeFallen[i])
                             {
@@ -1072,7 +1072,7 @@ int main(int argc, char* argv[])
 
                         for (int i = 0; i < 6; i++)
                         {
-                            if (treeTypes[i] == 0 &&
+                            if (
                                 !treeFalling[i] &&
                                 !treeFallen[i])
                             {
