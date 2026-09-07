@@ -358,8 +358,12 @@ int main(int argc, char* argv[])
     {
         bool validPosition = false;
 
-        while (!validPosition)
+        int attempts = 0;
+
+        while (!validPosition && attempts < 1000)
         {
+            attempts++;
+        
             treeRects[i].w = 140;
             treeRects[i].h = 356;
 
@@ -1686,7 +1690,7 @@ int main(int argc, char* argv[])
            
 
                 // TREE IS STILL STANDING
-                else
+                else if (!treeFalling[i])
                 {
                     bool playerUnderTree =
                         CheckCollision(player, treeRects[i]) &&
