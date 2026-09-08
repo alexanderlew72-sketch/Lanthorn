@@ -952,7 +952,8 @@ int main(int argc, char* argv[])
             if (
                 event.type == SDL_KEYDOWN &&
                 event.key.keysym.sym == SDLK_r &&
-                event.key.repeat == 0
+                event.key.repeat == 0 &&
+                !axeSwinging
                 )
             {
                 if (selectedSlot == axeSlot)
