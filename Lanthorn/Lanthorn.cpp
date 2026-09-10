@@ -688,6 +688,9 @@ int main(int argc, char* argv[])
     float playerX = 615.0f;
     float playerY = 335.0f;
 
+    float cameraX = 0.0f;
+    float cameraY = 0.0f;
+
 
     // Movement speed
     float playerSpeed = 2.5f;
@@ -700,6 +703,9 @@ int main(int argc, char* argv[])
     // Put the float position into the SDL rectangle
     player.x = static_cast<int>(playerX);
     player.y = static_cast<int>(playerY);
+
+    cameraX = playerX + (player.w / 2) - 640;
+    cameraY = playerY + (player.h / 2) - 360;
 
     playerCollisionRect.x =
         player.x + (player.w - playerCollisionRect.w) / 2;
@@ -1630,6 +1636,8 @@ int main(int argc, char* argv[])
             const int mapTiles = 100;
             const float mapCenter = 49.5f;
             const float mapRadius = 50.0f;
+            const int mapOffsetX = 640 - (50 * tileSize);
+            const int mapOffsetY = 360 - (50 * tileSize);
 
             for (int tileY = 0; tileY < mapTiles; tileY++)
             {
@@ -1642,8 +1650,8 @@ int main(int argc, char* argv[])
                     {
                         SDL_Rect grassTileRect;
 
-                        grassTileRect.x = tileX * tileSize;
-                        grassTileRect.y = tileY * tileSize;
+                        grassTileRect.x = mapOffsetX + tileX * tileSize;
+                        grassTileRect.y = mapOffsetY + tileY * tileSize;
                         grassTileRect.w = tileSize;
                         grassTileRect.h = tileSize;
 
