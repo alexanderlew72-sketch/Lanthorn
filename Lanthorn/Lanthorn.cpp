@@ -354,6 +354,10 @@ int main(int argc, char* argv[])
     playerSpawnRect.w = 96;
     playerSpawnRect.h = 96;
 
+    const int treeTileSize = 128;
+    const int treeMapOffsetX = 640 - (50 * treeTileSize);
+    const int treeMapOffsetY = 360 - (50 * treeTileSize);
+
     for (int i = 0; i < 6; i++)
     {
         bool validPosition = false;
@@ -366,11 +370,27 @@ int main(int argc, char* argv[])
         
             treeRects[i].w = 140;
             treeRects[i].h = 356;
+            int treeTileX = std::rand() % 100;
+            int treeTileY = std::rand() % 100;
 
-            treeRects[i].x = 100 + (std::rand() % 1080);
-            treeRects[i].y = 50 + (std::rand() % 310);
+            int tileWorldX =
+                treeMapOffsetX + treeTileX * treeTileSize;
+
+            int tileWorldY =
+                treeMapOffsetY + treeTileY * treeTileSize;
+
+            treeRects[i].x = tileWorldX - 6;
+            treeRects[i].y = tileWorldY - 264;
 
             validPosition = true;
+
+            float treeDx = treeTileX - 49.5f;
+            float treeDy = treeTileY - 49.5f;
+
+            if ((treeDx * treeDx) + (treeDy * treeDy) > 50.0f * 50.0f)
+            {
+                validPosition = false;
+            }
 
             // Do not spawn on the player.
             if (CheckCollision(treeRects[i], playerSpawnRect))
@@ -1688,6 +1708,9 @@ int main(int argc, char* argv[])
                     stumpRect.x = treeRects[i].x;
                     stumpRect.y = treeRects[i].y;
 
+                    stumpRect.x -= static_cast<int>(cameraX);
+                    stumpRect.y -= static_cast<int>(cameraY);
+
                     int playerBottom =
                         playerCollisionRect.y + playerCollisionRect.h;
 
@@ -1755,6 +1778,9 @@ int main(int argc, char* argv[])
                     }
 
                     treeFallRect.y = treeRects[i].y;
+
+                    treeFallRect.x -= static_cast<int>(cameraX);
+                    treeFallRect.y -= static_cast<int>(cameraY);
 
                     SDL_Texture* fallingTexture;
 
@@ -1873,7 +1899,8 @@ int main(int argc, char* argv[])
                     }
 
                     treeFallRect.y = treeRects[i].y;
-
+                    treeFallRect.x -= static_cast<int>(cameraX);
+                    treeFallRect.y -= static_cast<int>(cameraY);
                     SDL_Texture* fallingTexture;
 
                     if (treeTypes[i] == 0)
@@ -1931,6 +1958,9 @@ int main(int argc, char* argv[])
                         stumpRect.x = treeRects[i].x;
                         stumpRect.y = treeRects[i].y;
 
+                        stumpRect.x -= static_cast<int>(cameraX);
+                        stumpRect.y -= static_cast<int>(cameraY);
+
                         SDL_Texture* stumpTexture;
 
                         if (treeTypes[i] == 0)
@@ -1971,11 +2001,16 @@ int main(int argc, char* argv[])
 
                         SDL_SetTextureAlphaMod(treeTexture, 128);
 
+                        SDL_Rect treeRenderRect = treeRects[i];
+
+                        treeRenderRect.x -= static_cast<int>(cameraX);
+                        treeRenderRect.y -= static_cast<int>(cameraY);
+
                         SDL_RenderCopy(
                             renderer,
                             treeTexture,
                             nullptr,
-                            &treeRects[i]
+                            &treeRenderRect
                         );
 
                         SDL_SetTextureAlphaMod(treeTexture, 255);
