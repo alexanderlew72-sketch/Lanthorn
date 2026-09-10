@@ -1650,8 +1650,11 @@ int main(int argc, char* argv[])
                     {
                         SDL_Rect grassTileRect;
 
-                        grassTileRect.x = mapOffsetX + tileX * tileSize;
-                        grassTileRect.y = mapOffsetY + tileY * tileSize;
+                        grassTileRect.x =
+                            mapOffsetX + tileX * tileSize - static_cast<int>(cameraX);
+
+                        grassTileRect.y =
+                            mapOffsetY + tileY * tileSize - static_cast<int>(cameraY);
                         grassTileRect.w = tileSize;
                         grassTileRect.h = tileSize;
 
