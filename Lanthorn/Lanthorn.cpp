@@ -1399,6 +1399,9 @@ int main(int argc, char* argv[])
             player.x = static_cast<int>(playerX);
             player.y = static_cast<int>(playerY);
 
+            cameraX = playerX + (player.w / 2) - 640;
+            cameraY = playerY + (player.h / 2) - 360;
+
             // Keep the 40 x 16 collision box at the player's feet
             playerCollisionRect.x =
                 player.x + (player.w - playerCollisionRect.w) / 2;
@@ -1809,22 +1812,30 @@ int main(int argc, char* argv[])
                         }
 
                         SDL_SetTextureAlphaMod(treeTexture, 255);
+                        SDL_Rect treeRenderRect = treeRects[i];
 
+                        treeRenderRect.x -= static_cast<int>(cameraX);
+                        treeRenderRect.y -= static_cast<int>(cameraY);
                         SDL_RenderCopy(
                             renderer,
                             treeTexture,
                             nullptr,
-                            &treeRects[i]
+                            &treeRenderRect
                         );
                     }
                 }
             }
             // Draw the player.
+            SDL_Rect playerRenderRect = player;
+
+            playerRenderRect.x = 640 - (player.w / 2);
+            playerRenderRect.y = 360 - (player.h / 2);
+            
             SDL_RenderCopy(
                 renderer,
                 currentPlayerTexture,
                 &playerSourceRect,
-                &player
+                &playerRenderRect
             );
 
             // SECOND TREE PASS
