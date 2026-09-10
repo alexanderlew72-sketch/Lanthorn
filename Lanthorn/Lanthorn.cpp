@@ -10,6 +10,9 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <vector>
+#include <algorithm>
+
 bool CheckCollision(const SDL_Rect& a, const SDL_Rect& b)
 {
     return (
@@ -1698,6 +1701,30 @@ int main(int argc, char* argv[])
                     }
                 }
             }
+
+            std::vector<int> sortedTrees;
+
+            for (int i : sortedTrees)
+            {
+                
+            }
+
+            std::sort(
+                sortedTrees.begin(),
+                sortedTrees.end(),
+                [&](int a, int b)
+                {
+                    int bottomA =
+                        treeCollisionRects[a].y +
+                        treeCollisionRects[a].h;
+
+                    int bottomB =
+                        treeCollisionRects[b].y +
+                        treeCollisionRects[b].h;
+
+                    return bottomA < bottomB;
+                }
+            );
 
             // FIRST TREE PASS
 // Draw normal trees behind the player.
