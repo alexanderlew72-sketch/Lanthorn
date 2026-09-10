@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 
     SDL_Texture* backgroundTexture = IMG_LoadTexture(
         renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/background.png"
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/GrassBackground.png"
     );
 
     if (backgroundTexture == nullptr)
@@ -1626,13 +1626,36 @@ int main(int argc, char* argv[])
 
             // Clear the old frame.
             SDL_RenderClear(renderer);
+            const int tileSize = 128;
+            const int mapTiles = 100;
+            const float mapCenter = 49.5f;
+            const float mapRadius = 50.0f;
 
-            SDL_RenderCopy(
-                renderer,
-                backgroundTexture,
-                nullptr,
-                nullptr
-            );
+            for (int tileY = 0; tileY < mapTiles; tileY++)
+            {
+                for (int tileX = 0; tileX < mapTiles; tileX++)
+                {
+                    float dx = tileX - mapCenter;
+                    float dy = tileY - mapCenter;
+
+                    if ((dx * dx) + (dy * dy) <= mapRadius * mapRadius)
+                    {
+                        SDL_Rect grassTileRect;
+
+                        grassTileRect.x = tileX * tileSize;
+                        grassTileRect.y = tileY * tileSize;
+                        grassTileRect.w = tileSize;
+                        grassTileRect.h = tileSize;
+
+                        SDL_RenderCopy(
+                            renderer,
+                            backgroundTexture,
+                            nullptr,
+                            &grassTileRect
+                        );
+                    }
+                }
+            }
 
             // FIRST TREE PASS
 // Draw normal trees behind the player.
