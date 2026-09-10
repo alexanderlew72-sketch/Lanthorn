@@ -329,23 +329,19 @@ int main(int argc, char* argv[])
 
     axeRect.x = hotbarRect.x + 40;
     axeRect.y = hotbarRect.y + 40;
+    const int TREE_COUNT = 6000;
 
-    SDL_Rect treeRects[6];
-    SDL_Rect treeCollisionRects[6];
-    int treeTypes[6];
+    SDL_Rect treeRects[TREE_COUNT];
+    SDL_Rect treeCollisionRects[TREE_COUNT];
+    int treeTypes[TREE_COUNT];
 
-    int treeHits[6] = { 0, 0, 0, 0, 0, 0 };
-    bool treeFalling[6] = { false, false, false, false, false, false };
-    bool treeFallen[6] = { false, false, false, false, false, false };
-    int treeFallFrame[6] = { 0, 0, 0, 0, 0, 0 };
+    int treeHits[TREE_COUNT] = {};
+    bool treeFalling[TREE_COUNT] = {};
+    bool treeFallen[TREE_COUNT] = {};
+    int treeFallFrame[TREE_COUNT] = {};
 
-    int treeFallDirection[6] = { 0, 0, 0, 0, 0, 0 };
-
-    bool treeRandomFall[6] =
-    {
-        false, false, false,
-        false, false, false
-    };
+    int treeFallDirection[TREE_COUNT] = {};
+    bool treeRandomFall[TREE_COUNT] = {};
 
     SDL_Rect playerSpawnRect;
 
@@ -358,7 +354,7 @@ int main(int argc, char* argv[])
     const int treeMapOffsetX = 640 - (50 * treeTileSize);
     const int treeMapOffsetY = 360 - (50 * treeTileSize);
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < TREE_COUNT; i++)
     {
         bool validPosition = false;
 
@@ -398,10 +394,22 @@ int main(int argc, char* argv[])
                 validPosition = false;
             }
 
+            treeCollisionRects[i].w = 56;
+            treeCollisionRects[i].h = 56;
+
+            treeCollisionRects[i].x =
+                treeRects[i].x +
+                (treeRects[i].w - treeCollisionRects[i].w) / 2;
+
+            treeCollisionRects[i].y =
+                treeRects[i].y +
+                treeRects[i].h -
+                treeCollisionRects[i].h;
+
             // Do not spawn on another tree.
             for (int j = 0; j < i; j++)
             {
-                if (CheckCollision(treeRects[i], treeRects[j]))
+                if (CheckCollision(treeCollisionRects[i], treeCollisionRects[j]))
                 {
                     validPosition = false;
                     break;
@@ -1016,7 +1024,7 @@ int main(int argc, char* argv[])
     axeHitRect.y =
         playerCollisionRect.y - 26;
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < TREE_COUNT; i++)
     {
        
 
@@ -1068,7 +1076,7 @@ int main(int argc, char* argv[])
                         axeHitRect.y =
                             playerCollisionRect.y - 26;
 
-                        for (int i = 0; i < 6; i++)
+                        for (int i = 0; i < TREE_COUNT; i++)
                         {
                             // treeTypes[i] == 0 means Tree 1
                             if (!treeFalling[i] && !treeFallen[i])
@@ -1116,7 +1124,7 @@ int main(int argc, char* argv[])
                             playerCollisionRect.y +
                             playerCollisionRect.h;
 
-                        for (int i = 0; i < 6; i++)
+                        for (int i = 0; i < TREE_COUNT; i++)
                         {
                             if (
                                 !treeFalling[i] &&
@@ -1152,7 +1160,7 @@ int main(int argc, char* argv[])
                             playerCollisionRect.y -
                             axeHitRect.h;
 
-                        for (int i = 0; i < 6; i++)
+                        for (int i = 0; i < TREE_COUNT; i++)
                         {
                             if (
                                 !treeFalling[i] &&
@@ -1234,7 +1242,7 @@ int main(int argc, char* argv[])
 
                 blockedByTree = false;
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < TREE_COUNT; i++)
                 {
                     if (CheckCollision(
                         nextPlayerCollisionRect,
@@ -1284,7 +1292,7 @@ int main(int argc, char* argv[])
 
                 blockedByTree = false;
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < TREE_COUNT; i++)
                 {
                     if (CheckCollision(
                         nextPlayerCollisionRect,
@@ -1334,7 +1342,7 @@ int main(int argc, char* argv[])
 
                 blockedByTree = false;
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < TREE_COUNT; i++)
                 {
                     if (CheckCollision(
                         nextPlayerCollisionRect,
@@ -1383,7 +1391,7 @@ int main(int argc, char* argv[])
 
                 blockedByTree = false;
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < TREE_COUNT; i++)
                 {
                     if (CheckCollision(
                         nextPlayerCollisionRect,
@@ -1521,7 +1529,7 @@ int main(int argc, char* argv[])
 
         if (currentTime - lastTreeFallTime >= treeFallFrameDelay)
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < TREE_COUNT; i++)
             {
                 if (treeFalling[i])
                 {
@@ -1695,7 +1703,7 @@ int main(int argc, char* argv[])
 // Draw normal trees behind the player.
 // Draw falling trees and stumps normally.
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < TREE_COUNT; i++)
             {
                 // FALLEN TREE = STUMP ONLY
                 if (treeFallen[i])
@@ -1867,7 +1875,7 @@ int main(int argc, char* argv[])
             // SECOND TREE PASS
             // Only standing trees can become transparent.
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < TREE_COUNT; i++)
             {
 
                 if (
