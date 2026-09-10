@@ -1705,6 +1705,22 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < TREE_COUNT; i++)
             {
+
+                int treeScreenX =
+                    treeRects[i].x - static_cast<int>(cameraX);
+
+                int treeScreenY =
+                    treeRects[i].y - static_cast<int>(cameraY);
+
+                if (
+                    treeScreenX < -420 ||
+                    treeScreenX > 1580 ||
+                    treeScreenY < -360 ||
+                    treeScreenY > 720
+                    )
+                {
+                    continue;
+                }
                 // FALLEN TREE = STUMP ONLY
                 if (treeFallen[i])
                 {
@@ -1877,6 +1893,22 @@ int main(int argc, char* argv[])
 
             for (int i = 0; i < TREE_COUNT; i++)
             {
+
+                int treeScreenX =
+                    treeRects[i].x - static_cast<int>(cameraX);
+
+                int treeScreenY =
+                    treeRects[i].y - static_cast<int>(cameraY);
+
+                if (
+                    treeScreenX < -420 ||
+                    treeScreenX > 1580 ||
+                    treeScreenY < -360 ||
+                    treeScreenY > 720
+                    )
+                {
+                    continue;
+                }
 
                 if (
                     treeFalling[i] &&
