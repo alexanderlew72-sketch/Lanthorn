@@ -2093,6 +2093,12 @@ int main(int argc, char* argv[])
                 }
             }
 
+            bool lanternActive =
+                currentPlayerTexture == playerDownLanternTexture ||
+                currentPlayerTexture == playerUpLanternTexture ||
+                currentPlayerTexture == playerLeftLanternTexture ||
+                currentPlayerTexture == playerRightLanternTexture;
+
             SDL_SetRenderDrawBlendMode(
                 renderer,
                 SDL_BLENDMODE_BLEND
@@ -2105,17 +2111,67 @@ int main(int argc, char* argv[])
                 0,
                 static_cast<Uint8>(nightAlpha)
             );
+            if (!lanternActive)
+            {
+                SDL_Rect nightOverlay = { 0, 0, 1280, 720 };
 
-            SDL_Rect nightOverlay;
-            nightOverlay.x = 0;
-            nightOverlay.y = 0;
-            nightOverlay.w = 1280;
-            nightOverlay.h = 720;
+                SDL_RenderFillRect(
+                    renderer,
+                    &nightOverlay
+                );
+            }
+            else
+            {
+                const int lightTileSize = 6;
+                const int lightGridSize = 19;
+                const int lightRadius = 9;
 
-            SDL_RenderFillRect(
-                renderer,
-                &nightOverlay
-            );
+                const int lightStartX =
+                    640 - (lightGridSize * lightTileSize) / 2;
+
+                const int lightStartY =
+                    360 - (lightGridSize * lightTileSize) / 2;
+
+                for (int y = 0; y < 720; y += lightTileSize)
+                {
+                    for (int x = 0; x < 1280; x += lightTileSize)
+                    {
+                        int tileCenterX = x + lightTileSize / 2;
+                        int tileCenterY = y + lightTileSize / 2;
+
+                        int lightTileX =
+                            (tileCenterX - lightStartX) / lightTileSize - 9;
+
+                        int lightTileY =
+                            (tileCenterY - lightStartY) / lightTileSize - 9;
+
+                        bool insideLight =
+                            lightTileX >= -9 &&
+                            lightTileX <= 9 &&
+                            lightTileY >= -9 &&
+                            lightTileY <= 9 &&
+                            (lightTileX * lightTileX) +
+                            (lightTileY * lightTileY) <=
+                            lightRadius * lightRadius;
+
+                        if (!insideLight)
+                        {
+                            SDL_Rect darknessTile =
+                            {
+                                x,
+                                y,
+                                lightTileSize,
+                                lightTileSize
+                            };
+
+                            SDL_RenderFillRect(
+                                renderer,
+                                &darknessTile
+                            );
+                        }
+                    }
+                }
+            }
 
             SDL_RenderCopy(
                 renderer,
