@@ -2126,8 +2126,29 @@ int main(int argc, char* argv[])
                 const int tileSize = 4;
                 const int radius = 9;
 
-                const int lightLeft = 640 - 38;
-                const int lightTop = 360 - 38;
+                int lightLeft = 640 - 38 + 2;
+                int lightTop = 360 - 38 + 2;
+                if (currentPlayerTexture == playerLeftLanternTexture)
+                {
+                    lightLeft -= 20;
+                    lightTop += 44;
+                }
+                else if (currentPlayerTexture == playerRightLanternTexture)
+                {
+                    lightLeft += 16;
+                    lightTop += 44;
+                }
+                else if (currentPlayerTexture == playerUpLanternTexture)
+                {
+                    lightLeft += 32;
+                    lightTop += 40;
+                }
+                else if (currentPlayerTexture == playerDownLanternTexture)
+                {
+                    lightLeft -= 32;
+                    lightTop += 40;
+                }
+
 
                 const int circleHalfWidth[19] =
                 {
