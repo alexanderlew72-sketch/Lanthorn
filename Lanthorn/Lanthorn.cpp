@@ -378,7 +378,7 @@ int main(int argc, char* argv[])
             int tileWorldY =
                 treeMapOffsetY + treeTileY * treeTileSize;
 
-            treeRects[i].x = tileWorldX - 6;
+            treeRects[i].x = tileWorldX - 8;
             treeRects[i].y = tileWorldY - 264;
 
             validPosition = true;
@@ -704,15 +704,15 @@ int main(int argc, char* argv[])
 
     SDL_Rect playerCollisionRect;
 
-    playerCollisionRect.w = 40;
-    playerCollisionRect.h = 16;
+    playerCollisionRect.w = 44;
+    playerCollisionRect.h = 24;
 
 
     // This controls WHERE and HOW LARGE the player appears on screen
     SDL_Rect player;
 
-    player.w = 96;
-    player.h = 96;
+    player.w = 128;
+    player.h = 128;
 
 
     // Smooth player position
@@ -721,6 +721,9 @@ int main(int argc, char* argv[])
 
     float cameraX = 0.0f;
     float cameraY = 0.0f;
+
+    float nightAlpha = 0.0f;
+    bool gettingDarker = true;
 
 
     // Movement speed
@@ -1530,6 +1533,27 @@ int main(int argc, char* argv[])
         }
         Uint32 currentTime = SDL_GetTicks();
 
+        if (gettingDarker)
+        {
+            nightAlpha += 0.05f;
+
+            if (nightAlpha >= 180.0f)
+            {
+                nightAlpha = 180.0f;
+                gettingDarker = false;
+            }
+        }
+        else
+        {
+            nightAlpha -= 0.05f;
+
+            if (nightAlpha <= 0.0f)
+            {
+                nightAlpha = 0.0f;
+                gettingDarker = true;
+            }
+        }
+
         if (currentTime - lastTreeFallTime >= treeFallFrameDelay)
         {
             for (int i = 0; i < TREE_COUNT; i++)
@@ -1703,10 +1727,23 @@ int main(int argc, char* argv[])
             }
 
             std::vector<int> sortedTrees;
-
-            for (int i : sortedTrees)
+            for (int i = 0; i < TREE_COUNT; i++)
             {
-                
+                int treeScreenX =
+                    treeRects[i].x - static_cast<int>(cameraX);
+
+                int treeScreenY =
+                    treeRects[i].y - static_cast<int>(cameraY);
+
+                if (
+                    treeScreenX >= -420 &&
+                    treeScreenX <= 1580 &&
+                    treeScreenY >= -360 &&
+                    treeScreenY <= 720
+                    )
+                {
+                    sortedTrees.push_back(i);
+                }
             }
 
             std::sort(
@@ -1729,25 +1766,11 @@ int main(int argc, char* argv[])
             // FIRST TREE PASS
 // Draw normal trees behind the player.
 // Draw falling trees and stumps normally.
-
-            for (int i = 0; i < TREE_COUNT; i++)
+            for (int i : sortedTrees)
             {
 
-                int treeScreenX =
-                    treeRects[i].x - static_cast<int>(cameraX);
-
-                int treeScreenY =
-                    treeRects[i].y - static_cast<int>(cameraY);
-
-                if (
-                    treeScreenX < -420 ||
-                    treeScreenX > 1580 ||
-                    treeScreenY < -360 ||
-                    treeScreenY > 720
-                    )
-                {
-                    continue;
-                }
+                
+            
                 // FALLEN TREE = STUMP ONLY
                 if (treeFallen[i])
                 {
@@ -1918,24 +1941,9 @@ int main(int argc, char* argv[])
             // SECOND TREE PASS
             // Only standing trees can become transparent.
 
-            for (int i = 0; i < TREE_COUNT; i++)
+            for (int i : sortedTrees)
             {
 
-                int treeScreenX =
-                    treeRects[i].x - static_cast<int>(cameraX);
-
-                int treeScreenY =
-                    treeRects[i].y - static_cast<int>(cameraY);
-
-                if (
-                    treeScreenX < -420 ||
-                    treeScreenX > 1580 ||
-                    treeScreenY < -360 ||
-                    treeScreenY > 720
-                    )
-                {
-                    continue;
-                }
 
                 if (
                     treeFalling[i] &&
@@ -2084,6 +2092,31 @@ int main(int argc, char* argv[])
                     }
                 }
             }
+
+            SDL_SetRenderDrawBlendMode(
+                renderer,
+                SDL_BLENDMODE_BLEND
+            );
+
+            SDL_SetRenderDrawColor(
+                renderer,
+                0,
+                0,
+                0,
+                static_cast<Uint8>(nightAlpha)
+            );
+
+            SDL_Rect nightOverlay;
+            nightOverlay.x = 0;
+            nightOverlay.y = 0;
+            nightOverlay.w = 1280;
+            nightOverlay.h = 720;
+
+            SDL_RenderFillRect(
+                renderer,
+                &nightOverlay
+            );
+
             SDL_RenderCopy(
                 renderer,
                 hotbarTexture,
