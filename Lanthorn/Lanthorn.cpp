@@ -543,6 +543,7 @@ int main(int argc, char* argv[])
 
     SDL_FreeSurface(axeHitRightSurface);
 
+    
     SDL_Surface* playerUpLanternSurface =
         IMG_Load(
             "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/UpLantern.png"
@@ -2122,46 +2123,45 @@ int main(int argc, char* argv[])
             }
             else
             {
-                const int lightTileSize = 6;
-                const int lightGridSize = 19;
-                const int lightRadius = 9;
+                const int tileSize = 6;
+                const int gridSize = 19;
+                const int radius = 9;
 
-                const int lightStartX =
-                    640 - (lightGridSize * lightTileSize) / 2;
+                const int lightLeft = 640 - 57;
+                const int lightTop = 360 - 57;
 
-                const int lightStartY =
-                    360 - (lightGridSize * lightTileSize) / 2;
-
-                for (int y = 0; y < 720; y += lightTileSize)
+                for (int y = 0; y < 720; y += tileSize)
                 {
-                    for (int x = 0; x < 1280; x += lightTileSize)
+                    for (int x = 0; x < 1280; x += tileSize)
                     {
-                        int tileCenterX = x + lightTileSize / 2;
-                        int tileCenterY = y + lightTileSize / 2;
+                        bool insideLanternLight = false;
 
-                        int lightTileX =
-                            (tileCenterX - lightStartX) / lightTileSize - 9;
+                        for (int gridY = 0; gridY < gridSize; gridY++)
+                        {
+                            for (int gridX = 0; gridX < gridSize; gridX++)
+                            {
+                                int dx = gridX - 9;
+                                int dy = gridY - 9;
 
-                        int lightTileY =
-                            (tileCenterY - lightStartY) / lightTileSize - 9;
+                                if (
+                                    dx * dx + dy * dy <= radius * radius &&
+                                    x == lightLeft + gridX * tileSize &&
+                                    y == lightTop + gridY * tileSize
+                                    )
+                                {
+                                    insideLanternLight = true;
+                                }
+                            }
+                        }
 
-                        bool insideLight =
-                            lightTileX >= -9 &&
-                            lightTileX <= 9 &&
-                            lightTileY >= -9 &&
-                            lightTileY <= 9 &&
-                            (lightTileX * lightTileX) +
-                            (lightTileY * lightTileY) <=
-                            lightRadius * lightRadius;
-
-                        if (!insideLight)
+                        if (!insideLanternLight)
                         {
                             SDL_Rect darknessTile =
                             {
                                 x,
                                 y,
-                                lightTileSize,
-                                lightTileSize
+                                tileSize,
+                                tileSize
                             };
 
                             SDL_RenderFillRect(
