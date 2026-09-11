@@ -2123,11 +2123,34 @@ int main(int argc, char* argv[])
             }
             else
             {
-                const int tileSize = 6;
+                const int tileSize = 4;
                 const int radius = 9;
 
-                const int lightLeft = 640 - 57;
-                const int lightTop = 360 - 57;
+                const int lightLeft = 640 - 38;
+                const int lightTop = 360 - 38;
+
+                const int circleHalfWidth[19] =
+                {
+                    3,
+                    5,
+                    6,
+                    7,
+                    8,
+                    8,
+                    9,
+                    9,
+                    9,
+                    9,
+                    9,
+                    9,
+                    9,
+                    8,
+                    8,
+                    7,
+                    6,
+                    5,
+                    3
+                };
 
                 // Darkness above the 114x114 lantern area.
                 SDL_Rect topDark =
@@ -2147,9 +2170,9 @@ int main(int argc, char* argv[])
                 SDL_Rect bottomDark =
                 {
                     0,
-                    lightTop + 114,
+                    lightTop + 76,
                     1280,
-                    720 - (lightTop + 114)
+                    720 - (lightTop + 76)
                 };
 
                 SDL_RenderFillRect(
@@ -2161,20 +2184,7 @@ int main(int argc, char* argv[])
                 // of each 6-pixel row of the circle.
                 for (int gridY = 0; gridY < 19; gridY++)
                 {
-                    int dy = gridY - 9;
-
-                    int maxDx = 0;
-
-                    for (int dx = 0; dx <= radius; dx++)
-                    {
-                        if (
-                            dx * dx + dy * dy <=
-                            radius * radius
-                            )
-                        {
-                            maxDx = dx;
-                        }
-                    }
+                    int maxDx = circleHalfWidth[gridY];
 
                     int holeLeft =
                         lightLeft +
@@ -2214,12 +2224,6 @@ int main(int argc, char* argv[])
                         &rightDark
                     );
                 }
-            }
-
-                SDL_SetRenderDrawBlendMode(
-                    renderer,
-                    SDL_BLENDMODE_BLEND
-                );
             }
 
             SDL_RenderCopy(
