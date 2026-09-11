@@ -2124,53 +2124,102 @@ int main(int argc, char* argv[])
             else
             {
                 const int tileSize = 6;
-                const int gridSize = 19;
                 const int radius = 9;
 
                 const int lightLeft = 640 - 57;
                 const int lightTop = 360 - 57;
 
-                for (int y = 0; y < 720; y += tileSize)
+                // Darkness above the 114x114 lantern area.
+                SDL_Rect topDark =
                 {
-                    for (int x = 0; x < 1280; x += tileSize)
+                    0,
+                    0,
+                    1280,
+                    lightTop
+                };
+
+                SDL_RenderFillRect(
+                    renderer,
+                    &topDark
+                );
+
+                // Darkness below the 114x114 lantern area.
+                SDL_Rect bottomDark =
+                {
+                    0,
+                    lightTop + 114,
+                    1280,
+                    720 - (lightTop + 114)
+                };
+
+                SDL_RenderFillRect(
+                    renderer,
+                    &bottomDark
+                );
+
+                // Draw darkness on the left and right
+                // of each 6-pixel row of the circle.
+                for (int gridY = 0; gridY < 19; gridY++)
+                {
+                    int dy = gridY - 9;
+
+                    int maxDx = 0;
+
+                    for (int dx = 0; dx <= radius; dx++)
                     {
-                        bool insideLanternLight = false;
-
-                        for (int gridY = 0; gridY < gridSize; gridY++)
+                        if (
+                            dx * dx + dy * dy <=
+                            radius * radius
+                            )
                         {
-                            for (int gridX = 0; gridX < gridSize; gridX++)
-                            {
-                                int dx = gridX - 9;
-                                int dy = gridY - 9;
-
-                                if (
-                                    dx * dx + dy * dy <= radius * radius &&
-                                    x == lightLeft + gridX * tileSize &&
-                                    y == lightTop + gridY * tileSize
-                                    )
-                                {
-                                    insideLanternLight = true;
-                                }
-                            }
-                        }
-
-                        if (!insideLanternLight)
-                        {
-                            SDL_Rect darknessTile =
-                            {
-                                x,
-                                y,
-                                tileSize,
-                                tileSize
-                            };
-
-                            SDL_RenderFillRect(
-                                renderer,
-                                &darknessTile
-                            );
+                            maxDx = dx;
                         }
                     }
+
+                    int holeLeft =
+                        lightLeft +
+                        (9 - maxDx) * tileSize;
+
+                    int holeRight =
+                        lightLeft +
+                        (9 + maxDx + 1) * tileSize;
+
+                    int rowY =
+                        lightTop +
+                        gridY * tileSize;
+
+                    SDL_Rect leftDark =
+                    {
+                        0,
+                        rowY,
+                        holeLeft,
+                        tileSize
+                    };
+
+                    SDL_RenderFillRect(
+                        renderer,
+                        &leftDark
+                    );
+
+                    SDL_Rect rightDark =
+                    {
+                        holeRight,
+                        rowY,
+                        1280 - holeRight,
+                        tileSize
+                    };
+
+                    SDL_RenderFillRect(
+                        renderer,
+                        &rightDark
+                    );
                 }
+            }
+
+                SDL_SetRenderDrawBlendMode(
+                    renderer,
+                    SDL_BLENDMODE_BLEND
+                );
             }
 
             SDL_RenderCopy(
