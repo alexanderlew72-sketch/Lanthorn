@@ -1582,6 +1582,35 @@ int main(int argc, char* argv[])
             }
         }
 
+        int dayClockFrame = 1;
+
+        if (gettingDarker)
+        {
+            float dayProgress =
+                nightAlpha / 180.0f;
+
+            dayClockFrame =
+                1 + static_cast<int>(
+                    dayProgress * 8.0f + 0.5f
+                    );
+        }
+        else
+        {
+            float nightProgress =
+                (180.0f - nightAlpha) / 180.0f;
+
+            int lighteningStep =
+                static_cast<int>(
+                    nightProgress * 8.0f + 0.5f
+                    );
+
+            dayClockFrame =
+                (9 + lighteningStep) % 16;
+        }
+
+        dayClockSourceRect.x =
+            dayClockFrame * 21;
+
         if (currentTime - lastTreeFallTime >= treeFallFrameDelay)
         {
             for (int i = 0; i < TREE_COUNT; i++)
@@ -2369,6 +2398,13 @@ int main(int argc, char* argv[])
                 hotbarTexture,
                 nullptr,
                 &hotbarRect
+            );
+
+            SDL_RenderCopy(
+                renderer,
+                dayClockTexture,
+                &dayClockSourceRect,
+                &dayClockRect
             );
 
             lanternSourceRect.x = lanternSlot * 568;
