@@ -163,6 +163,18 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
+    SDL_Texture* dayClockTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/DayClockWindow-Sheet.png"
+    );
+
+    if (dayClockTexture == nullptr)
+    {
+        std::cout << "Day clock failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
     SDL_Texture* pickaxeTexture = IMG_LoadTexture(
         renderer,
         "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Pick-Sheet.png"
@@ -694,6 +706,21 @@ int main(int argc, char* argv[])
 
     startButton.x = (1280 - startButton.w) / 2;
     startButton.y = (720 - startButton.h) / 2;
+
+    SDL_Rect dayClockSourceRect;
+
+    dayClockSourceRect.x = 21;
+    dayClockSourceRect.y = 0;
+    dayClockSourceRect.w = 21;
+    dayClockSourceRect.h = 22;
+
+    SDL_Rect dayClockRect;
+
+    dayClockRect.w = 84;
+    dayClockRect.h = 88;
+
+    dayClockRect.x = 1280 - dayClockRect.w - 20;
+    dayClockRect.y = 20;
 
     // This selects which 32x32 frame of the sprite sheet to show
     SDL_Rect playerSourceRect;
@@ -2150,10 +2177,40 @@ int main(int argc, char* argv[])
                 }
 
 
-                const int circleHalfWidth[19] =
+                const int outerHalfWidth[19] =
                 {
                     3, 5, 6, 7, 8, 8, 9, 9, 9, 9,
                     9, 9, 9, 8, 8, 7, 6, 5, 3
+                };
+
+                const int ring60HalfWidth[19] =
+                {
+                    -1, -1,
+                     2,  4,  5,  6,  6,  7,  7,  7,
+                     7,  7,  6,  6,  5,  4,  2,
+                    -1, -1
+                };
+
+                const int ring40HalfWidth[19] =
+                {
+                    -1, -1, -1, -1,
+                     1,  3,  4,  4,  5,  5,  5,
+                     4,  4,  3,  1,
+                    -1, -1, -1, -1
+                };
+
+                const int ring20HalfWidth[19] =
+                {
+                    -1, -1, -1, -1, -1, -1,
+                     1,  2,  3,  3,  3,  2,  1,
+                    -1, -1, -1, -1, -1, -1
+                };
+
+                const int centerHalfWidth[19] =
+                {
+                    -1, -1, -1, -1, -1, -1, -1, -1,
+                     1,  1,  1,
+                    -1, -1, -1, -1, -1, -1, -1, -1
                 };
 
                 // Darkness above the 114x114 lantern area.
