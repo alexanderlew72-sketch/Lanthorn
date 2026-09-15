@@ -2152,25 +2152,8 @@ int main(int argc, char* argv[])
 
                 const int circleHalfWidth[19] =
                 {
-                    3,
-                    5,
-                    6,
-                    7,
-                    8,
-                    8,
-                    9,
-                    9,
-                    9,
-                    9,
-                    9,
-                    9,
-                    9,
-                    8,
-                    8,
-                    7,
-                    6,
-                    5,
-                    3
+                    3, 5, 6, 7, 8, 8, 9, 9, 9, 9,
+                    9, 9, 9, 8, 8, 7, 6, 5, 3
                 };
 
                 // Darkness above the 114x114 lantern area.
@@ -2205,7 +2188,7 @@ int main(int argc, char* argv[])
                 // of each 6-pixel row of the circle.
                 for (int gridY = 0; gridY < 19; gridY++)
                 {
-                    int maxDx = circleHalfWidth[gridY];
+                    int maxDx = outerHalfWidth[gridY];
 
                     int holeLeft =
                         lightLeft +
@@ -2243,6 +2226,83 @@ int main(int argc, char* argv[])
                     SDL_RenderFillRect(
                         renderer,
                         &rightDark
+                    );
+                    for (
+                        int gridX = 9 - maxDx;
+                        gridX <= 9 + maxDx;
+                        gridX++
+                        )
+                    {
+                        int dxAbs = std::abs(gridX - 9);
+
+                        float darknessAmount = 0.80f;
+
+                        if (
+                            centerHalfWidth[gridY] >= 0 &&
+                            dxAbs <= centerHalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.00f;
+                        }
+                        else if (
+                            ring20HalfWidth[gridY] >= 0 &&
+                            dxAbs <= ring20HalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.20f;
+                        }
+                        else if (
+                            ring40HalfWidth[gridY] >= 0 &&
+                            dxAbs <= ring40HalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.40f;
+                        }
+                        else if (
+                            ring60HalfWidth[gridY] >= 0 &&
+                            dxAbs <= ring60HalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.60f;
+                        }
+                        else
+                        {
+                            darknessAmount = 0.80f;
+                        }
+
+                        Uint8 tileAlpha =
+                            static_cast<Uint8>(
+                                nightAlpha * darknessAmount
+                                );
+
+                        SDL_SetRenderDrawColor(
+                            renderer,
+                            0,
+                            0,
+                            0,
+                            tileAlpha
+                        );
+
+                        SDL_Rect gradientTile =
+                        {
+                            lightLeft + gridX * tileSize,
+                            rowY,
+                            tileSize,
+                            tileSize
+                        };
+
+                        SDL_RenderFillRect(
+                            renderer,
+                            &gradientTile
+                        );
+                    }
+
+                    SDL_SetRenderDrawColor(
+                        renderer,
+                        0,
+                        0,
+                        0,
+                        static_cast<Uint8>(nightAlpha)
                     );
                 }
             }
