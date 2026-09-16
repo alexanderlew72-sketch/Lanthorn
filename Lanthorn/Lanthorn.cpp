@@ -1095,34 +1095,32 @@ int main(int argc, char* argv[])
 
                 if (selectedSlot == lanternSlot)
                 {
-                    const Uint8* fireKeys =
-                        SDL_GetKeyboardState(nullptr);
+                    int mouseX = event.button.x;
+                    int mouseY = event.button.y;
 
-                    int directionX = 0;
-                    int directionY = 0;
+                    float playerScreenX =
+                        player.x + (player.w / 2.0f);
 
-                    if (fireKeys[SDL_SCANCODE_W])
+                    float playerScreenY =
+                        player.y + (player.h / 2.0f);
+
+                    float directionX =
+                        mouseX - playerScreenX;
+
+                    float directionY =
+                        mouseY - playerScreenY;
+
+                    float length =
+                        SDL_sqrtf(
+                            directionX * directionX +
+                            directionY * directionY
+                        );
+
+                    if (length > 0.0f)
                     {
-                        directionY -= 1;
-                    }
+                        directionX /= length;
+                        directionY /= length;
 
-                    if (fireKeys[SDL_SCANCODE_S])
-                    {
-                        directionY += 1;
-                    }
-
-                    if (fireKeys[SDL_SCANCODE_A])
-                    {
-                        directionX -= 1;
-                    }
-
-                    if (fireKeys[SDL_SCANCODE_D])
-                    {
-                        directionX += 1;
-                    }
-
-                    if (directionX != 0 || directionY != 0)
-                    {
                         fireballX =
                             playerX +
                             (player.w / 2) -
@@ -1133,19 +1131,11 @@ int main(int argc, char* argv[])
                             (player.h / 2) -
                             (fireballRect.h / 2);
 
-                        float directionSpeed = fireballSpeed;
-
-                        // Keep diagonal fireballs from moving faster.
-                        if (directionX != 0 && directionY != 0)
-                        {
-                            directionSpeed *= 0.7071f;
-                        }
-
                         fireballVelocityX =
-                            directionX * directionSpeed;
+                            directionX * fireballSpeed;
 
                         fireballVelocityY =
-                            directionY * directionSpeed;
+                            directionY * fireballSpeed;
 
                         fireballFrame = 0;
                         fireballSourceRect.x = 0;
@@ -1157,8 +1147,6 @@ int main(int argc, char* argv[])
                     }
                 }
                 else if (selectedSlot == axeSlot)
-
-                if (selectedSlot == axeSlot)
                 {
                     axeSwinging = true;
 
