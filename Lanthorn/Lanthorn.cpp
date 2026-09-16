@@ -763,6 +763,33 @@ int main(int argc, char* argv[])
 
     heartRect.y =
         dayClockRect.y;
+
+    SDL_Rect fireballSourceRect;
+
+    fireballSourceRect.x = 0;
+    fireballSourceRect.y = 0;
+    fireballSourceRect.w = 32;
+    fireballSourceRect.h = 32;
+
+    SDL_Rect fireballRect;
+
+    fireballRect.w = 128;
+    fireballRect.h = 128;
+
+    float fireballX = 0.0f;
+    float fireballY = 0.0f;
+
+    float fireballVelocityX = 0.0f;
+    float fireballVelocityY = 0.0f;
+
+    float fireballSpeed = 6.0f;
+
+    bool fireballActive = false;
+
+    int fireballFrame = 0;
+
+    Uint32 lastFireballFrameTime = SDL_GetTicks();
+    const Uint32 fireballFrameDelay = 100;
     
     // This selects which 32x32 frame of the sprite sheet to show
     SDL_Rect playerSourceRect;
@@ -1058,14 +1085,79 @@ int main(int argc, char* argv[])
             }
         
 
-            // AXE HIT WITH R
+            // ATTACK WITH LEFT MOUSE BUTTON
             if (
-                event.type == SDL_KEYDOWN &&
-                event.key.keysym.sym == SDLK_r &&
-                event.key.repeat == 0 &&
+                event.type == SDL_MOUSEBUTTONDOWN &&
+                event.button.button == SDL_BUTTON_LEFT &&
                 !axeSwinging
                 )
             {
+
+                if (selectedSlot == lanternSlot)
+                {
+                    const Uint8* fireKeys =
+                        SDL_GetKeyboardState(nullptr);
+
+                    int directionX = 0;
+                    int directionY = 0;
+
+                    if (fireKeys[SDL_SCANCODE_W])
+                    {
+                        directionY -= 1;
+                    }
+
+                    if (fireKeys[SDL_SCANCODE_S])
+                    {
+                        directionY += 1;
+                    }
+
+                    if (fireKeys[SDL_SCANCODE_A])
+                    {
+                        directionX -= 1;
+                    }
+
+                    if (fireKeys[SDL_SCANCODE_D])
+                    {
+                        directionX += 1;
+                    }
+
+                    if (directionX != 0 || directionY != 0)
+                    {
+                        fireballX =
+                            playerX +
+                            (player.w / 2) -
+                            (fireballRect.w / 2);
+
+                        fireballY =
+                            playerY +
+                            (player.h / 2) -
+                            (fireballRect.h / 2);
+
+                        float directionSpeed = fireballSpeed;
+
+                        // Keep diagonal fireballs from moving faster.
+                        if (directionX != 0 && directionY != 0)
+                        {
+                            directionSpeed *= 0.7071f;
+                        }
+
+                        fireballVelocityX =
+                            directionX * directionSpeed;
+
+                        fireballVelocityY =
+                            directionY * directionSpeed;
+
+                        fireballFrame = 0;
+                        fireballSourceRect.x = 0;
+
+                        lastFireballFrameTime =
+                            SDL_GetTicks();
+
+                        fireballActive = true;
+                    }
+                }
+                else if (selectedSlot == axeSlot)
+
                 if (selectedSlot == axeSlot)
                 {
                     axeSwinging = true;
@@ -1652,6 +1744,47 @@ int main(int argc, char* argv[])
 
         dayClockSourceRect.x =
             dayClockFrame * 21;
+
+        if (fireballActive)
+        {
+            fireballX += fireballVelocityX;
+            fireballY += fireballVelocityY;
+
+            fireballRect.x =
+                static_cast<int>(fireballX - cameraX);
+
+            fireballRect.y =
+                static_cast<int>(fireballY - cameraY);
+
+            if (
+                currentTime - lastFireballFrameTime >=
+                fireballFrameDelay
+                )
+            {
+                fireballFrame++;
+
+                if (fireballFrame >= 4)
+                {
+                    fireballFrame = 0;
+                }
+
+                fireballSourceRect.x =
+                    fireballFrame * 32;
+
+                lastFireballFrameTime =
+                    currentTime;
+            }
+
+            if (
+                fireballRect.x < -64 ||
+                fireballRect.x > 1344 ||
+                fireballRect.y < -64 ||
+                fireballRect.y > 784
+                )
+            {
+                fireballActive = false;
+            }
+        }
 
         if (currentTime - lastTreeFallTime >= treeFallFrameDelay)
         {
@@ -2441,6 +2574,16 @@ int main(int argc, char* argv[])
                 nullptr,
                 &hotbarRect
             );
+
+            if (fireballActive)
+            {
+                SDL_RenderCopy(
+                    renderer,
+                    fireballTexture,
+                    &fireballSourceRect,
+                    &fireballRect
+                );
+            }
 
             SDL_RenderCopy(
                 renderer,
