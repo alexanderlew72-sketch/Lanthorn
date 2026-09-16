@@ -175,6 +175,30 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
+    SDL_Texture* heartTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/HeartSheet.png"
+    );
+
+    if (heartTexture == nullptr)
+    {
+        std::cout << "Heart sheet failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
+    SDL_Texture* fireballTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Fireball-Sheet.png"
+    );
+
+    if (fireballTexture == nullptr)
+    {
+        std::cout << "Fireball failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
     SDL_Texture* pickaxeTexture = IMG_LoadTexture(
         renderer,
         "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Pick-Sheet.png"
@@ -722,6 +746,24 @@ int main(int argc, char* argv[])
     dayClockRect.x = 1280 - dayClockRect.w - 20;
     dayClockRect.y = 20;
 
+    SDL_Rect heartSourceRect;
+
+    heartSourceRect.x = 0;
+    heartSourceRect.y = 0;
+    heartSourceRect.w = 59;
+    heartSourceRect.h = 10;
+
+    SDL_Rect heartRect;
+
+    heartRect.w = 236;
+    heartRect.h = 40;
+
+    heartRect.x =
+        dayClockRect.x - heartRect.w - 12;
+
+    heartRect.y =
+        dayClockRect.y;
+    
     // This selects which 32x32 frame of the sprite sheet to show
     SDL_Rect playerSourceRect;
 
@@ -2398,6 +2440,13 @@ int main(int argc, char* argv[])
                 hotbarTexture,
                 nullptr,
                 &hotbarRect
+            );
+
+            SDL_RenderCopy(
+                renderer,
+                heartTexture,
+                &heartSourceRect,
+                &heartRect
             );
 
             SDL_RenderCopy(
