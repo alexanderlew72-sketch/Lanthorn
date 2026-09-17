@@ -24,7 +24,7 @@ bool CheckCollision(const SDL_Rect& a, const SDL_Rect& b)
 }
 
 int main(int argc, char* argv[])
-{
+{  
 
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -796,7 +796,7 @@ int main(int argc, char* argv[])
     float fireballVelocityX = 0.0f;
     float fireballVelocityY = 0.0f;
 
-    float fireballSpeed =0.0f;
+    float fireballSpeed =6.0f;
 
     bool fireballActive = false;
 
@@ -1747,13 +1747,11 @@ int main(int argc, char* argv[])
         dayClockSourceRect.x =
             dayClockFrame * 21;
 
+        
         if (fireballActive)
         {
-            if (fireballActive)
-            {
-                // TEST - freeze fireball in place
-                // fireballX += fireballVelocityX;
-                // fireballY += fireballVelocityY;
+            fireballX += fireballVelocityX;
+            fireballY += fireballVelocityY;
 
             fireballRect.x =
                 static_cast<int>(fireballX - cameraX);
@@ -2593,10 +2591,10 @@ int main(int argc, char* argv[])
                 const int fireLightTileSize = 4;
 
                 int fireLightLeft =
-                    fireballRect.x + 68 - 38;
+                    fireballRect.x + 62 - 38;
 
                 int fireLightTop =
-                    fireballRect.y + 64 - 38;
+                    fireballRect.y + 66 - 38;
 
                 const int fireOuterHalfWidth[19] =
                 {
@@ -3013,4 +3011,4 @@ int main(int argc, char* argv[])
     SDL_Quit();
 
     return 0;
-    }
+}
