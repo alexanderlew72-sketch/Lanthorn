@@ -1910,7 +1910,13 @@ int main(int argc, char* argv[])
                     currentBatTexture = batUpTexture;
                     batDirection = 1;
                 }
-                else//
+                else
+                {
+                    currentBatTexture = batDownTexture;
+                    batDirection = 0;
+                }
+            }
+        }
 
         if (batActive &&
             currentTime - lastBatFrameTime >= batFrameDelay)
@@ -1926,6 +1932,11 @@ int main(int argc, char* argv[])
             batSourceRect.y = 0;
 
             lastBatFrameTime = currentTime;
+        }
+
+        if (nightAlpha < 120.0f && batActive)
+        {
+            batActive = false;
         }
 
         int dayClockFrame = 1;
