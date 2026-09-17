@@ -806,6 +806,12 @@ int main(int argc, char* argv[])
     heartSourceRect.w = 59;
     heartSourceRect.h = 10;
 
+    int playerHealth = 5;
+    const int maxPlayerHealth = 5;
+
+    Uint32 lastBatDamageTime = 0;
+    const Uint32 batDamageCooldown = 1000;
+
     SDL_Rect heartRect;
 
     heartRect.w = 236;
@@ -893,6 +899,7 @@ int main(int argc, char* argv[])
     float batSpeed = 1.5f;
 
     bool batActive = false;
+    bool batFlyingAway = false;
 
     int batFrame = 0;
     int batDirection = 0;
@@ -1849,6 +1856,7 @@ int main(int argc, char* argv[])
         if (nightAlpha >= 120.0f && !batActive)
         {
             batActive = true;
+            batFlyingAway = false;
 
             batX = playerX + 700.0f;
             batY = playerY;
@@ -1863,57 +1871,78 @@ int main(int argc, char* argv[])
 
         if (batActive)
         {
-            float batDX = playerX - batX;
-            float batDY = playerY - batY;
-
-            float absBatDX =
-                batDX < 0.0f ? -batDX : batDX;
-
-            float absBatDY =
-                batDY < 0.0f ? -batDY : batDY;
-
-            if (batDX < 0.0f)
+            if (nightAlpha < 40.0f)
             {
-                batX -= batSpeed;
-            }
-            else if (batDX > 0.0f)
-            {
-                batX += batSpeed;
+                batFlyingAway = true;
             }
 
-            if (batDY < 0.0f)
+            if (!batFlyingAway)
             {
-                batY -= batSpeed;
-            }
-            else if (batDY > 0.0f)
-            {
-                batY += batSpeed;
-            }
+                float batDX = playerX - batX;
+                float batDY = playerY - batY;
 
-            if (absBatDX > absBatDY)
-            {
+                float absBatDX =
+                    batDX < 0.0f ? -batDX : batDX;
+
+                float absBatDY =
+                    batDY < 0.0f ? -batDY : batDY;
+
                 if (batDX < 0.0f)
                 {
-                    currentBatTexture = batLeftTexture;
-                    batDirection = 2;
+                    batX -= batSpeed;
+                }
+                else if (batDX > 0.0f)
+                {
+                    batX += batSpeed;
+                }
+
+                if (batDY < 0.0f)
+                {
+                    batY -= batSpeed;
+                }
+                else if (batDY > 0.0f)
+                {
+                    batY += batSpeed;
+                }
+
+                if (absBatDX > absBatDY)
+                {
+                    if (batDX < 0.0f)
+                    {
+                        currentBatTexture = batLeftTexture;
+                        batDirection = 2;
+                    }
+                    else
+                    {
+                        currentBatTexture = batRightTexture;
+                        batDirection = 3;
+                    }
                 }
                 else
                 {
-                    currentBatTexture = batRightTexture;
-                    batDirection = 3;
+                    if (batDY < 0.0f)
+                    {
+                        currentBatTexture = batUpTexture;
+                        batDirection = 1;
+                    }
+                    else
+                    {
+                        currentBatTexture = batDownTexture;
+                        batDirection = 0;
+                    }
                 }
             }
             else
             {
-                if (batDY < 0.0f)
+                batY -= batSpeed * 2.0f;
+
+                currentBatTexture = batUpTexture;
+                batDirection = 1;
+
+                if (batY < playerY - 900.0f)
                 {
-                    currentBatTexture = batUpTexture;
-                    batDirection = 1;
-                }
-                else
-                {
-                    currentBatTexture = batDownTexture;
-                    batDirection = 0;
+                    batActive = false;
+                    batFlyingAway = false;
                 }
             }
         }
@@ -1934,9 +1963,40 @@ int main(int argc, char* argv[])
             lastBatFrameTime = currentTime;
         }
 
-        if (nightAlpha < 120.0f && batActive)
+        if (batActive && !batFlyingAway)
         {
-            batActive = false;
+            SDL_Rect batCollisionRect;
+
+            batCollisionRect.w = 40;
+            batCollisionRect.h = 40;
+
+            batCollisionRect.x =
+                static_cast<int>(batX) +
+                (104 - batCollisionRect.w) / 2;
+
+            batCollisionRect.y =
+                static_cast<int>(batY) +
+                (104 - batCollisionRect.h) / 2;
+
+            if (
+                CheckCollision(
+                    batCollisionRect,
+                    playerCollisionRect
+                ) &&
+                currentTime - lastBatDamageTime >=
+                batDamageCooldown
+                )
+            {
+                if (playerHealth > 0)
+                {
+                    playerHealth--;
+
+                    heartSourceRect.x =
+                        (maxPlayerHealth - playerHealth) * 59;
+                }
+
+                lastBatDamageTime = currentTime;
+            }
         }
 
         int dayClockFrame = 1;
