@@ -390,6 +390,7 @@ int main(int argc, char* argv[])
     SDL_Rect stumpCollisionRects[TREE_COUNT];
 
     int treeTypes[TREE_COUNT];
+    bool treeFlipped[TREE_COUNT];
 
     int treeHits[TREE_COUNT] = {};
     bool treeFalling[TREE_COUNT] = {};
@@ -474,6 +475,8 @@ int main(int argc, char* argv[])
         }
 
         treeTypes[i] = std::rand() % 2;
+        treeFlipped[i] = std::rand() % 2;
+
 
         treeCollisionRects[i].w = 96;
         treeCollisionRects[i].h = 96;
@@ -1126,19 +1129,19 @@ int main(int argc, char* argv[])
 
                 if (selectedSlot == lanternSlot)
                 {
-                    float mouseX;
-                    float mouseY;
+                    float mouseX =
+                        static_cast<float>(event.button.x);
 
-                    SDL_RenderWindowToLogical(
-                        renderer,
-                        event.button.x,
-                        event.button.y,
-                        &mouseX,
-                        &mouseY
-                    );
+                    float mouseY =
+                        static_cast<float>(event.button.y);
 
-                    float playerScreenX = 640.0f;
-                    float playerScreenY = 360.0f;
+                    float playerScreenX =
+                        player.x - cameraX +
+                        (player.w / 2.0f);
+
+                    float playerScreenY =
+                        player.y - cameraY +
+                        (player.h / 2.0f);
 
                     float directionX =
                         mouseX - playerScreenX;
@@ -1242,7 +1245,14 @@ int main(int argc, char* argv[])
             )
             {
                 treeHitThisSwing = i;
-                treeFallDirection[i] = 1;
+                if (treeFlipped[i])
+                {
+                    treeFallDirection[i] = 0;
+                }
+                else
+                {
+                    treeFallDirection[i] = 1;
+                }
                 treeRandomFall[i] = false;
 
                 break;
@@ -1291,7 +1301,14 @@ int main(int argc, char* argv[])
                                     )
                                 {
                                     treeHitThisSwing = i;
-                                    treeFallDirection[i] = 0;
+                                    if (treeFlipped[i])
+                                    {
+                                        treeFallDirection[i] = 1;
+                                    }
+                                    else
+                                    {
+                                        treeFallDirection[i] = 0;
+                                    }
                                     treeRandomFall[i] = false;
                                     // Only hit one tree per swing
                                     break;
@@ -1922,6 +1939,12 @@ int main(int argc, char* argv[])
                             {
                                 treeFallDirection[treeHitThisSwing] =
                                     std::rand() % 2;
+
+                                if (treeFlipped[treeHitThisSwing])
+                                {
+                                    treeFallDirection[treeHitThisSwing] =
+                                        1 - treeFallDirection[treeHitThisSwing];
+                                }
                             }
 
                             treeFalling[treeHitThisSwing] = true;
@@ -2138,11 +2161,17 @@ int main(int argc, char* argv[])
                             stumpTexture = stump2Texture;
                         }
 
-                        SDL_RenderCopy(
+                        SDL_RenderCopyEx(
                             renderer,
                             stumpTexture,
                             nullptr,
-                            &stumpRect
+                            &stumpRect,
+                            0.0,
+                            nullptr,
+                            treeFlipped[i]
+                            ? SDL_FLIP_HORIZONTAL
+                            : SDL_FLIP_NONE
+                       
                         );
                     }
                 }
@@ -2242,11 +2271,17 @@ int main(int argc, char* argv[])
 
                         treeRenderRect.x -= static_cast<int>(cameraX);
                         treeRenderRect.y -= static_cast<int>(cameraY);
-                        SDL_RenderCopy(
+                        SDL_RenderCopyEx(
                             renderer,
                             treeTexture,
                             nullptr,
-                            &treeRenderRect
+                            &treeRenderRect,
+                            0.0,
+                            nullptr,
+                            treeFlipped[i]
+                            ? SDL_FLIP_HORIZONTAL
+                            : SDL_FLIP_NONE
+                       
                         );
                     }
                 }
@@ -2373,11 +2408,17 @@ int main(int argc, char* argv[])
                             stumpTexture = stump2Texture;
                         }
 
-                        SDL_RenderCopy(
+                        SDL_RenderCopyEx(
                             renderer,
                             stumpTexture,
                             nullptr,
-                            &stumpRect
+                            &stumpRect,
+                            0.0,
+                            nullptr,
+                            treeFlipped[i]
+                            ? SDL_FLIP_HORIZONTAL
+                            : SDL_FLIP_NONE
+                       
                         );
                     }
                 }
@@ -2407,11 +2448,17 @@ int main(int argc, char* argv[])
                         treeRenderRect.x -= static_cast<int>(cameraX);
                         treeRenderRect.y -= static_cast<int>(cameraY);
 
-                        SDL_RenderCopy(
+                        SDL_RenderCopyEx(
                             renderer,
                             treeTexture,
                             nullptr,
-                            &treeRenderRect
+                            &treeRenderRect,
+                            0.0,
+                            nullptr,
+                            treeFlipped[i]
+                            ? SDL_FLIP_HORIZONTAL
+                            : SDL_FLIP_NONE
+                        
                         );
 
                         SDL_SetTextureAlphaMod(treeTexture, 255);
