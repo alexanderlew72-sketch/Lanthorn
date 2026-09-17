@@ -386,6 +386,9 @@ int main(int argc, char* argv[])
 
     SDL_Rect treeRects[TREE_COUNT];
     SDL_Rect treeCollisionRects[TREE_COUNT];
+
+    SDL_Rect stumpCollisionRects[TREE_COUNT];
+
     int treeTypes[TREE_COUNT];
 
     int treeHits[TREE_COUNT] = {};
@@ -447,8 +450,8 @@ int main(int argc, char* argv[])
                 validPosition = false;
             }
 
-            treeCollisionRects[i].w = 56;
-            treeCollisionRects[i].h = 56;
+            treeCollisionRects[i].w = 96;
+            treeCollisionRects[i].h = 96;
 
             treeCollisionRects[i].x =
                 treeRects[i].x +
@@ -472,8 +475,8 @@ int main(int argc, char* argv[])
 
         treeTypes[i] = std::rand() % 2;
 
-        treeCollisionRects[i].w = 56;
-        treeCollisionRects[i].h = 56;
+        treeCollisionRects[i].w = 96;
+        treeCollisionRects[i].h = 96;
 
         treeCollisionRects[i].x =
             treeRects[i].x +
@@ -483,6 +486,19 @@ int main(int argc, char* argv[])
             treeRects[i].y +
             treeRects[i].h -
             treeCollisionRects[i].h;
+    
+        stumpCollisionRects[i].w = 96;
+        stumpCollisionRects[i].h = 56;
+
+        stumpCollisionRects[i].x =
+            treeRects[i].x +
+            (treeRects[i].w - stumpCollisionRects[i].w) / 2;
+
+        stumpCollisionRects[i].y =
+            treeRects[i].y +
+            treeRects[i].h -
+            stumpCollisionRects[i].h;
+    
     }
 
     SDL_Rect hotbarHighlightSource;
@@ -816,7 +832,7 @@ int main(int argc, char* argv[])
     SDL_Rect playerCollisionRect;
 
     playerCollisionRect.w = 44;
-    playerCollisionRect.h = 24;
+    playerCollisionRect.h = 44;
 
 
     // This controls WHERE and HOW LARGE the player appears on screen
@@ -1414,9 +1430,20 @@ int main(int argc, char* argv[])
 
                 for (int i = 0; i < TREE_COUNT; i++)
                 {
+                    SDL_Rect currentTreeCollision;
+
+                    if (treeFallen[i])
+                    {
+                        currentTreeCollision = stumpCollisionRects[i];
+                    }
+                    else
+                    {
+                        currentTreeCollision = treeCollisionRects[i];
+                    }
+
                     if (CheckCollision(
                         nextPlayerCollisionRect,
-                        treeCollisionRects[i]
+                        currentTreeCollision
                     ))
                     {
                         blockedByTree = true;
@@ -1461,12 +1488,22 @@ int main(int argc, char* argv[])
                     nextPlayer.y + nextPlayer.h - nextPlayerCollisionRect.h;
 
                 blockedByTree = false;
-
                 for (int i = 0; i < TREE_COUNT; i++)
                 {
+                    SDL_Rect currentTreeCollision;
+
+                    if (treeFallen[i])
+                    {
+                        currentTreeCollision = stumpCollisionRects[i];
+                    }
+                    else
+                    {
+                        currentTreeCollision = treeCollisionRects[i];
+                    }
+
                     if (CheckCollision(
                         nextPlayerCollisionRect,
-                        treeCollisionRects[i]
+                        currentTreeCollision
                     ))
                     {
                         blockedByTree = true;
@@ -1514,9 +1551,20 @@ int main(int argc, char* argv[])
 
                 for (int i = 0; i < TREE_COUNT; i++)
                 {
+                    SDL_Rect currentTreeCollision;
+
+                    if (treeFallen[i])
+                    {
+                        currentTreeCollision = stumpCollisionRects[i];
+                    }
+                    else
+                    {
+                        currentTreeCollision = treeCollisionRects[i];
+                    }
+
                     if (CheckCollision(
                         nextPlayerCollisionRect,
-                        treeCollisionRects[i]
+                        currentTreeCollision
                     ))
                     {
                         blockedByTree = true;
@@ -1560,12 +1608,22 @@ int main(int argc, char* argv[])
                     nextPlayer.y + nextPlayer.h - nextPlayerCollisionRect.h;
 
                 blockedByTree = false;
-
                 for (int i = 0; i < TREE_COUNT; i++)
                 {
+                    SDL_Rect currentTreeCollision;
+
+                    if (treeFallen[i])
+                    {
+                        currentTreeCollision = stumpCollisionRects[i];
+                    }
+                    else
+                    {
+                        currentTreeCollision = treeCollisionRects[i];
+                    }
+
                     if (CheckCollision(
                         nextPlayerCollisionRect,
-                        treeCollisionRects[i]
+                        currentTreeCollision
                     ))
                     {
                         blockedByTree = true;
@@ -1758,6 +1816,21 @@ int main(int argc, char* argv[])
 
             fireballRect.y =
                 static_cast<int>(fireballY - cameraY);
+
+            for (int i = 0; i < TREE_COUNT; i++)
+            {
+                if (
+                    !treeFallen[i] &&
+                    CheckCollision(
+                        fireballRect,
+                        treeCollisionRects[i]
+                    )
+                    )
+                {
+                    fireballActive = false;
+                    break;
+                }
+            }
 
             if (
                 currentTime - lastFireballFrameTime >=
@@ -2023,15 +2096,14 @@ int main(int argc, char* argv[])
                     int playerBottom =
                         playerCollisionRect.y + playerCollisionRect.h;
 
-
                     int stumpBottom =
-                        treeCollisionRects[i].y + treeCollisionRects[i].h;
+                        stumpCollisionRects[i].y + stumpCollisionRects[i].h;
 
                     bool playerOverlapsStumpX =
                         playerCollisionRect.x + playerCollisionRect.w >
-                        treeCollisionRects[i].x &&
+                        stumpCollisionRects[i].x &&
                         playerCollisionRect.x <
-                        treeCollisionRects[i].x + treeCollisionRects[i].w;
+                        stumpCollisionRects[i].x + stumpCollisionRects[i].w;
 
                     if (!playerOverlapsStumpX ||
                         playerBottom >= stumpBottom)
@@ -2249,13 +2321,13 @@ int main(int argc, char* argv[])
                         playerCollisionRect.y + playerCollisionRect.h;
 
                     int stumpBottom =
-                        treeCollisionRects[i].y + treeCollisionRects[i].h;
+                        stumpCollisionRects[i].y + stumpCollisionRects[i].h;
 
                     bool playerOverlapsStumpX =
                         playerCollisionRect.x + playerCollisionRect.w >
-                        treeCollisionRects[i].x &&
+                        stumpCollisionRects[i].x &&
                         playerCollisionRect.x <
-                        treeCollisionRects[i].x + treeCollisionRects[i].w;
+                        stumpCollisionRects[i].x + stumpCollisionRects[i].w;
 
                     if (playerOverlapsStumpX &&
                         playerBottom < stumpBottom)
