@@ -213,6 +213,26 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
+    SDL_Texture* batDownTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/BatDown-Sheet.png"
+    );
+
+    SDL_Texture* batLeftTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/BatLeft-Sheet.png"
+    );
+
+    SDL_Texture* batUpTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/BatUp-Sheet.png"
+    );
+
+    SDL_Texture* batRightTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/BatRight-Sheet.png"
+    );
+
     SDL_Texture* pickaxeTexture = IMG_LoadTexture(
         renderer,
         "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Pick-Sheet.png"
@@ -854,6 +874,33 @@ int main(int argc, char* argv[])
 
     float nightAlpha = 0.0f;
     bool gettingDarker = true;
+
+    SDL_Rect batSourceRect;
+
+    batSourceRect.x = 0;
+    batSourceRect.y = 0;
+    batSourceRect.w = 26;
+    batSourceRect.h = 26;
+
+    SDL_Rect batRect;
+
+    batRect.w = 104;
+    batRect.h = 104;
+
+    float batX = 0.0f;
+    float batY = 0.0f;
+
+    float batSpeed = 1.5f;
+
+    bool batActive = false;
+
+    int batFrame = 0;
+    int batDirection = 0;
+
+    Uint32 lastBatFrameTime = SDL_GetTicks();
+    const Uint32 batFrameDelay = 120;
+
+    SDL_Texture* currentBatTexture = batDownTexture;
 
 
     // Movement speed
@@ -1799,6 +1846,88 @@ int main(int argc, char* argv[])
             }
         }
 
+        if (nightAlpha >= 120.0f && !batActive)
+        {
+            batActive = true;
+
+            batX = playerX + 700.0f;
+            batY = playerY;
+
+            batFrame = 0;
+            batDirection = 2;
+
+            currentBatTexture = batLeftTexture;
+
+            lastBatFrameTime = currentTime;
+        }
+
+        if (batActive)
+        {
+            float batDX = playerX - batX;
+            float batDY = playerY - batY;
+
+            float absBatDX =
+                batDX < 0.0f ? -batDX : batDX;
+
+            float absBatDY =
+                batDY < 0.0f ? -batDY : batDY;
+
+            if (batDX < 0.0f)
+            {
+                batX -= batSpeed;
+            }
+            else if (batDX > 0.0f)
+            {
+                batX += batSpeed;
+            }
+
+            if (batDY < 0.0f)
+            {
+                batY -= batSpeed;
+            }
+            else if (batDY > 0.0f)
+            {
+                batY += batSpeed;
+            }
+
+            if (absBatDX > absBatDY)
+            {
+                if (batDX < 0.0f)
+                {
+                    currentBatTexture = batLeftTexture;
+                    batDirection = 2;
+                }
+                else
+                {
+                    currentBatTexture = batRightTexture;
+                    batDirection = 3;
+                }
+            }
+            else
+            {
+                if (batDY < 0.0f)
+                {
+                    currentBatTexture = batUpTexture;
+                    batDirection = 1;
+                }
+                else//
+
+        if (batActive &&
+            currentTime - lastBatFrameTime >= batFrameDelay)
+        {
+            batFrame++;
+
+            if (batFrame >= 4)
+            {
+                batFrame = 0;
+            }
+
+            batSourceRect.x = batFrame * 26;
+            batSourceRect.y = 0;
+
+            lastBatFrameTime = currentTime;
+        }
+
         int dayClockFrame = 1;
 
         if (gettingDarker)
@@ -2074,6 +2203,22 @@ int main(int argc, char* argv[])
                         );
                     }
                 }
+            }
+
+            if (batActive)
+            {
+                batRect.x =
+                    static_cast<int>(batX - cameraX);
+
+                batRect.y =
+                    static_cast<int>(batY - cameraY);
+
+                SDL_RenderCopy(
+                    renderer,
+                    currentBatTexture,
+                    &batSourceRect,
+                    &batRect
+                );
             }
 
             std::vector<int> sortedTrees;
