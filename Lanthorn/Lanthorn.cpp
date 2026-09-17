@@ -83,6 +83,20 @@ int main(int argc, char* argv[])
         720
     );
 
+    SDL_Texture* darknessTexture =
+        SDL_CreateTexture(
+            renderer,
+            SDL_PIXELFORMAT_RGBA8888,
+            SDL_TEXTUREACCESS_TARGET,
+            1280,
+            720
+        );
+
+    SDL_SetTextureBlendMode(
+        darknessTexture,
+        SDL_BLENDMODE_BLEND
+    );
+
     // LOAD PLAYER IMAGE HERE
 
     std::cout << "Looking for assets/WalkingDown-Sheet.png" << std::endl;
@@ -782,7 +796,7 @@ int main(int argc, char* argv[])
     float fireballVelocityX = 0.0f;
     float fireballVelocityY = 0.0f;
 
-    float fireballSpeed = 6.0f;
+    float fireballSpeed =0.0f;
 
     bool fireballActive = false;
 
@@ -1735,8 +1749,11 @@ int main(int argc, char* argv[])
 
         if (fireballActive)
         {
-            fireballX += fireballVelocityX;
-            fireballY += fireballVelocityY;
+            if (fireballActive)
+            {
+                // TEST - freeze fireball in place
+                // fireballX += fireballVelocityX;
+                // fireballY += fireballVelocityY;
 
             fireballRect.x =
                 static_cast<int>(fireballX - cameraX);
@@ -2312,6 +2329,21 @@ int main(int argc, char* argv[])
                     }
                 }
             }
+            
+            SDL_SetRenderTarget(
+                renderer,
+                darknessTexture
+            );
+
+            SDL_SetRenderDrawColor(
+                renderer,
+                0,
+                0,
+                0,
+                0
+            );
+
+            SDL_RenderClear(renderer);
 
             bool lanternActive =
                 currentPlayerTexture == playerDownLanternTexture ||
@@ -2555,6 +2587,155 @@ int main(int argc, char* argv[])
                     );
                 }
             }
+
+            if (fireballActive)
+            {
+                const int fireLightTileSize = 4;
+
+                int fireLightLeft =
+                    fireballRect.x + 68 - 38;
+
+                int fireLightTop =
+                    fireballRect.y + 64 - 38;
+
+                const int fireOuterHalfWidth[19] =
+                {
+                    3, 5, 6, 7, 8, 8, 9, 9, 9, 9,
+                    9, 9, 9, 8, 8, 7, 6, 5, 3
+                };
+
+                const int fireRing60HalfWidth[19] =
+                {
+                    -1, -1,
+                     2, 4, 5, 6, 6, 7, 7, 7,
+                     7, 7, 6, 6, 5, 4, 2,
+                    -1, -1
+                };
+
+                const int fireRing40HalfWidth[19] =
+                {
+                    -1, -1, -1, -1,
+                     1, 3, 4, 4, 5, 5, 5,
+                     4, 4, 3, 1,
+                    -1, -1, -1, -1
+                };
+
+                const int fireRing20HalfWidth[19] =
+                {
+                    -1, -1, -1, -1, -1, -1,
+                     1, 2, 3, 3, 3, 2, 1,
+                    -1, -1, -1, -1, -1, -1
+                };
+
+                const int fireCenterHalfWidth[19] =
+                {
+                    -1, -1, -1, -1, -1, -1, -1, -1,
+                     1, 1, 1,
+                    -1, -1, -1, -1, -1, -1, -1, -1
+                };
+
+                SDL_SetRenderDrawBlendMode(
+                    renderer,
+                    SDL_BLENDMODE_NONE
+                );
+
+                for (int gridY = 0; gridY < 19; gridY++)
+                {
+                    int maxDx =
+                        fireOuterHalfWidth[gridY];
+
+                    int rowY =
+                        fireLightTop +
+                        gridY * fireLightTileSize;
+
+                    for (
+                        int gridX = 9 - maxDx;
+                        gridX <= 9 + maxDx;
+                        gridX++
+                        )
+                    {
+                        int dxAbs =
+                            std::abs(gridX - 9);
+
+                        float darknessAmount = 0.80f;
+
+                        if (
+                            fireCenterHalfWidth[gridY] >= 0 &&
+                            dxAbs <= fireCenterHalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.00f;
+                        }
+                        else if (
+                            fireRing20HalfWidth[gridY] >= 0 &&
+                            dxAbs <= fireRing20HalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.20f;
+                        }
+                        else if (
+                            fireRing40HalfWidth[gridY] >= 0 &&
+                            dxAbs <= fireRing40HalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.40f;
+                        }
+                        else if (
+                            fireRing60HalfWidth[gridY] >= 0 &&
+                            dxAbs <= fireRing60HalfWidth[gridY]
+                            )
+                        {
+                            darknessAmount = 0.60f;
+                        }
+
+                        Uint8 fireTileAlpha =
+                            static_cast<Uint8>(
+                                nightAlpha * darknessAmount
+                                );
+
+                        SDL_SetRenderDrawColor(
+                            renderer,
+                            0,
+                            0,
+                            0,
+                            fireTileAlpha
+                        );
+
+                        SDL_Rect fireGradientTile =
+                        {
+                            fireLightLeft +
+                                gridX * fireLightTileSize,
+
+                            rowY,
+
+                            fireLightTileSize,
+                            fireLightTileSize
+                        };
+
+                        SDL_RenderFillRect(
+                            renderer,
+                            &fireGradientTile
+                        );
+                    }
+                }
+
+                SDL_SetRenderDrawBlendMode(
+                    renderer,
+                    SDL_BLENDMODE_BLEND
+                );
+            }
+            
+            SDL_SetRenderTarget(
+                renderer,
+                nullptr
+            );
+
+            SDL_RenderCopy(
+                renderer,
+                darknessTexture,
+                nullptr,
+                nullptr
+            );
 
             SDL_RenderCopy(
                 renderer,
