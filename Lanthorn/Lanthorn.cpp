@@ -1119,20 +1119,26 @@ int main(int argc, char* argv[])
             if (
                 event.type == SDL_MOUSEBUTTONDOWN &&
                 event.button.button == SDL_BUTTON_LEFT &&
-                !axeSwinging
+                !axeSwinging &&
+                !fireballActive
                 )
             {
 
                 if (selectedSlot == lanternSlot)
                 {
-                    int mouseX = event.button.x;
-                    int mouseY = event.button.y;
+                    float mouseX;
+                    float mouseY;
 
-                    float playerScreenX =
-                        player.x + (player.w / 2.0f);
+                    SDL_RenderWindowToLogical(
+                        renderer,
+                        event.button.x,
+                        event.button.y,
+                        &mouseX,
+                        &mouseY
+                    );
 
-                    float playerScreenY =
-                        player.y + (player.h / 2.0f);
+                    float playerScreenX = 640.0f;
+                    float playerScreenY = 360.0f;
 
                     float directionX =
                         mouseX - playerScreenX;
@@ -1823,10 +1829,10 @@ int main(int argc, char* argv[])
             fireballCollisionRect.h = 20;
 
             fireballCollisionRect.x =
-                fireballRect.x + 52;
+                static_cast<int>(fireballX) + 52;
 
             fireballCollisionRect.y =
-                fireballRect.y + 56;
+                static_cast<int>(fireballY) + 56;
 
             for (int i = 0; i < TREE_COUNT; i++)
             {
