@@ -2196,14 +2196,33 @@ int main(int argc, char* argv[])
                     treeFallRect.w = 416;
                     treeFallRect.h = 356;
 
-                    if (treeFallDirection[i] == 0)
+                    if (!treeFlipped[i])
                     {
-                        treeFallRect.x = treeRects[i].x;
+                        if (treeFallDirection[i] == 0)
+                        {
+                            treeFallRect.x = treeRects[i].x;
+                        }
+                        else
+                        {
+                            treeFallRect.x =
+                                treeRects[i].x - ((104 - 35) * 4);
+                        }
                     }
                     else
                     {
-                        treeFallRect.x =
-                            treeRects[i].x - ((104 - 35) * 4);
+                        if (treeFallDirection[i] == 0)
+                        {
+                            // Reversed falling-right:
+                            // far-right edge stays aligned with tree
+                            treeFallRect.x =
+                                treeRects[i].x - ((104 - 35) * 4);
+                        }
+                        else
+                        {
+                            // Reversed falling-left:
+                            // left edge stays aligned with tree
+                            treeFallRect.x = treeRects[i].x;
+                        }
                     }
 
                     treeFallRect.y = treeRects[i].y;
@@ -2236,11 +2255,16 @@ int main(int argc, char* argv[])
                         }
                     }
 
-                    SDL_RenderCopy(
+                    SDL_RenderCopyEx(
                         renderer,
                         fallingTexture,
                         &treeFallSourceRect,
-                        &treeFallRect
+                        &treeFallRect,
+                        0.0,
+                        nullptr,
+                        treeFlipped[i]
+                        ? SDL_FLIP_HORIZONTAL
+                        : SDL_FLIP_NONE
                     );
                 }
 
@@ -2324,14 +2348,29 @@ int main(int argc, char* argv[])
                     treeFallRect.w = 416;
                     treeFallRect.h = 356;
 
-                    if (treeFallDirection[i] == 0)
+                    if (!treeFlipped[i])
                     {
-                        treeFallRect.x = treeRects[i].x;
+                        if (treeFallDirection[i] == 0)
+                        {
+                            treeFallRect.x = treeRects[i].x;
+                        }
+                        else
+                        {
+                            treeFallRect.x =
+                                treeRects[i].x - ((104 - 35) * 4);
+                        }
                     }
                     else
                     {
-                        treeFallRect.x =
-                            treeRects[i].x - ((104 - 35) * 4);
+                        if (treeFallDirection[i] == 0)
+                        {
+                            treeFallRect.x =
+                                treeRects[i].x - ((104 - 35) * 4);
+                        }
+                        else
+                        {
+                            treeFallRect.x = treeRects[i].x;
+                        }
                     }
 
                     treeFallRect.y = treeRects[i].y;
@@ -2362,11 +2401,16 @@ int main(int argc, char* argv[])
                         }
                     }
 
-                    SDL_RenderCopy(
+                    SDL_RenderCopyEx(
                         renderer,
                         fallingTexture,
                         &treeFallSourceRect,
-                        &treeFallRect
+                        &treeFallRect,
+                        0.0,
+                        nullptr,
+                        treeFlipped[i]
+                        ? SDL_FLIP_HORIZONTAL
+                        : SDL_FLIP_NONE
                     );
                 }
                 else if (treeFallen[i])
