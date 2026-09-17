@@ -1817,15 +1817,28 @@ int main(int argc, char* argv[])
             fireballRect.y =
                 static_cast<int>(fireballY - cameraY);
 
+            SDL_Rect fireballCollisionRect;
+
+            fireballCollisionRect.w = 20;
+            fireballCollisionRect.h = 20;
+
+            fireballCollisionRect.x =
+                fireballRect.x + 52;
+
+            fireballCollisionRect.y =
+                fireballRect.y + 56;
+
             for (int i = 0; i < TREE_COUNT; i++)
             {
-                if (
-                    !treeFallen[i] &&
-                    CheckCollision(
-                        fireballRect,
-                        treeCollisionRects[i]
-                    )
-                    )
+                if (treeFallen[i])
+                {
+                    continue;
+                }
+
+                if (CheckCollision(
+                    fireballCollisionRect,
+                    treeCollisionRects[i]
+                ))
                 {
                     fireballActive = false;
                     break;
