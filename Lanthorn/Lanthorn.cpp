@@ -201,6 +201,18 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
+    SDL_Texture* flameTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Flame-Sheet.png"
+    );
+
+    if (flameTexture == nullptr)
+    {
+        std::cout << "Flame sheet failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
     SDL_Texture* fireballTexture = IMG_LoadTexture(
         renderer,
         "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Fireball-Sheet.png"
@@ -822,6 +834,23 @@ int main(int argc, char* argv[])
 
     heartRect.y =
         dayClockRect.y;
+
+    SDL_Rect flameSourceRect;
+
+    flameSourceRect.x = 0;
+    flameSourceRect.y = 0;
+    flameSourceRect.w = 59;
+    flameSourceRect.h = 10;
+
+    SDL_Rect flameRect;
+
+    flameRect.w = 236;
+    flameRect.h = 40;
+
+    flameRect.x = heartRect.x;
+
+    flameRect.y =
+        heartRect.y + heartRect.h + 8;
 
     SDL_Rect fireballSourceRect;
 
@@ -3155,6 +3184,13 @@ int main(int argc, char* argv[])
                 heartTexture,
                 &heartSourceRect,
                 &heartRect
+            );
+
+            SDL_RenderCopy(
+                renderer,
+                flameTexture,
+                &flameSourceRect,
+                &flameRect
             );
 
             SDL_RenderCopy(
