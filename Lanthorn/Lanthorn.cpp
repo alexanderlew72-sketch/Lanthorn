@@ -269,58 +269,98 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
-    SDL_Texture* tree1Texture = IMG_LoadTexture(
+    SDL_Texture* cypressTexture = IMG_LoadTexture(
         renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Tree1-Sheet.png"
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Cypress.png"
     );
 
-    if (tree1Texture == nullptr)
+    SDL_Texture* cypressLeftTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/CypressLeft-Sheet.png"
+    );
+
+    SDL_Texture* cypressRightTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/CypressRight-Sheet.png"
+    );
+
+    SDL_Texture* cypressStumpTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/CypressStump.png"
+    );
+
+    if (cypressTexture == nullptr)
     {
-        std::cout << "Tree 1 failed to load: "
+        std::cout << "Cypress failed to load: "
             << IMG_GetError()
             << std::endl;
     }
 
-    SDL_Texture* tree2Texture = IMG_LoadTexture(
-        renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Tree2-Sheet.png"
-    );
-
-    SDL_Texture* treeFallingRightTexture = IMG_LoadTexture(
-        renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/TreeFallingRight-Sheet.png"
-    );
-
-    SDL_Texture* treeFallingLeftTexture = IMG_LoadTexture(
-        renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/TreeFallingLeft-Sheet.png"
-    );
-
-    if (treeFallingLeftTexture == nullptr)
+    if (cypressLeftTexture == nullptr)
     {
-        std::cout << "Tree falling left failed to load: "
+        std::cout << "Cypress left failed to load: "
             << IMG_GetError()
             << std::endl;
     }
-    SDL_Texture* tree2FallingLeftTexture = IMG_LoadTexture(
-        renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Tree2FallingLeft-Sheet.png"
-    );
 
-    if (tree2FallingLeftTexture == nullptr)
+    if (cypressRightTexture == nullptr)
     {
-        std::cout << "Tree 2 falling left failed to load: "
+        std::cout << "Cypress right failed to load: "
             << IMG_GetError()
             << std::endl;
     }
-    SDL_Texture* tree2FallingRightTexture = IMG_LoadTexture(
+
+    if (cypressStumpTexture == nullptr)
+    {
+        std::cout << "Cypress stump failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
+    SDL_Texture* deadTexture = IMG_LoadTexture(
         renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Tree2FallingRight-Sheet.png"
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Dead.png"
     );
 
-    if (tree2FallingRightTexture == nullptr)
+    SDL_Texture* deadLeftTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/DeadLeft-Sheet.png"
+    );
+
+    SDL_Texture* deadRightTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/DeadRight-Sheet.png"
+    );
+
+    SDL_Texture* deadStumpTexture = IMG_LoadTexture(
+        renderer,
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/DeadStump.png"
+    );
+
+    if (deadTexture == nullptr)
     {
-        std::cout << "Tree 2 falling right failed to load: "
+        std::cout << "Dead tree failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
+    if (deadLeftTexture == nullptr)
+    {
+        std::cout << "Dead left failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
+    if (deadRightTexture == nullptr)
+    {
+        std::cout << "Dead right failed to load: "
+            << IMG_GetError()
+            << std::endl;
+    }
+
+    if (deadStumpTexture == nullptr)
+    {
+        std::cout << "Dead stump failed to load: "
             << IMG_GetError()
             << std::endl;
     }
