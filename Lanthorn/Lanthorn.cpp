@@ -203,7 +203,7 @@ int main(int argc, char* argv[])
 
     SDL_Texture* flameTexture = IMG_LoadTexture(
         renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Flame-Sheet.png"
+        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Flames-Sheet.png"
     );
 
     if (flameTexture == nullptr)
@@ -842,6 +842,12 @@ int main(int argc, char* argv[])
     flameSourceRect.w = 59;
     flameSourceRect.h = 10;
 
+    int flameAmmo = 5;
+    const int maxFlameAmmo = 5;
+
+    Uint32 lastFlameRechargeTime = SDL_GetTicks();
+    const Uint32 flameRechargeDelay = 2000;
+
     SDL_Rect flameRect;
 
     flameRect.w = 236;
@@ -929,6 +935,9 @@ int main(int argc, char* argv[])
 
     bool batActive = false;
     bool batFlyingAway = false;
+
+    int batHealth = 2;
+    const int maxBatHealth = 2;
 
     int batFrame = 0;
     int batDirection = 0;
@@ -1210,7 +1219,10 @@ int main(int argc, char* argv[])
                 )
             {
 
-                if (selectedSlot == lanternSlot)
+                if (
+                    selectedSlot == lanternSlot &&
+                    flameAmmo > 0
+                    )
                 {
                     float mouseX =
                         static_cast<float>(event.button.x);
@@ -1266,6 +1278,14 @@ int main(int argc, char* argv[])
                             SDL_GetTicks();
 
                         fireballActive = true;
+
+                        flameAmmo--;
+
+                        flameSourceRect.x =
+                            (maxFlameAmmo - flameAmmo) * 59;
+
+                        lastFlameRechargeTime =
+                            SDL_GetTicks();
                     }
                 }
                 else if (selectedSlot == axeSlot)
@@ -1861,6 +1881,21 @@ int main(int argc, char* argv[])
         }
         Uint32 currentTime = SDL_GetTicks();
 
+        if (
+            flameAmmo < maxFlameAmmo &&
+            currentTime - lastFlameRechargeTime >=
+            flameRechargeDelay
+            )
+        {
+            flameAmmo++;
+
+            flameSourceRect.x =
+                (maxFlameAmmo - flameAmmo) * 59;
+
+            lastFlameRechargeTime =
+                currentTime;
+        }
+
         if (gettingDarker)
         {
             nightAlpha += 0.05f;
@@ -1886,6 +1921,8 @@ int main(int argc, char* argv[])
         {
             batActive = true;
             batFlyingAway = false;
+
+            batHealth = maxBatHealth;
 
             batX = playerX + 700.0f;
             batY = playerY;
@@ -2079,6 +2116,38 @@ int main(int argc, char* argv[])
 
             fireballCollisionRect.y =
                 static_cast<int>(fireballY) + 56;
+
+            SDL_Rect batHitRect;
+
+            batHitRect.w = 40;
+            batHitRect.h = 40;
+
+            batHitRect.x =
+                static_cast<int>(batX) +
+                (104 - batHitRect.w) / 2;
+
+            batHitRect.y =
+                static_cast<int>(batY) +
+                (104 - batHitRect.h) / 2;
+
+            if (
+                batActive &&
+                !batFlyingAway &&
+                CheckCollision(
+                    fireballCollisionRect,
+                    batHitRect
+                )
+                )
+            {
+                batHealth--;
+
+                fireballActive = false;
+
+                if (batHealth <= 0)
+                {
+                    batActive = false;
+                }
+            }
 
             for (int i = 0; i < TREE_COUNT; i++)
             {
