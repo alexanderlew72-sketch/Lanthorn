@@ -2313,7 +2313,7 @@ if (oakStumpTexture == nullptr)
                         treeFallen[i] = true;
                     }
                     else if (
-                        treeTypes[i] == 0 &&
+                        treeTypes[i] != 1 &&
                         treeFallFrame[i] >= 9
                         )
                     {
@@ -2581,9 +2581,17 @@ if (oakStumpTexture == nullptr)
                         {
                             stumpTexture = cypressStumpTexture;
                         }
-                        else
+                        else if (treeTypes[i] == 1)
                         {
                             stumpTexture = deadStumpTexture;
+                        }
+                        else if (treeTypes[i] == 2)
+                        {
+                            stumpTexture = mapleStumpTexture;
+                        }
+                        else
+                        {
+                            stumpTexture = oakStumpTexture;
                         }
 
                         SDL_RenderCopyEx(
@@ -2668,7 +2676,7 @@ if (oakStumpTexture == nullptr)
                             fallingTexture = cypressLeftTexture;
                         }
                     }
-                    else
+                    else if (treeTypes[i] == 1)
                     {
                         if (treeFallDirection[i] == 0)
                         {
@@ -2677,6 +2685,28 @@ if (oakStumpTexture == nullptr)
                         else
                         {
                             fallingTexture = deadLeftTexture;
+                        }
+                    }
+                    else if (treeTypes[i] == 2)
+                    {
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = mapleRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = mapleLeftTexture;
+                        }
+                    }
+                    else
+                    {
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = oakRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = oakLeftTexture;
                         }
                     }
 
@@ -2875,16 +2905,23 @@ if (oakStumpTexture == nullptr)
                         stumpRect.y -= static_cast<int>(cameraY);
 
                         SDL_Texture* stumpTexture;
-
+                        
                         if (treeTypes[i] == 0)
                         {
                             stumpTexture = cypressStumpTexture;
                         }
-                        else
+                        else if (treeTypes[i] == 1)
                         {
                             stumpTexture = deadStumpTexture;
                         }
-
+                        else if (treeTypes[i] == 2)
+                        {
+                            stumpTexture = mapleStumpTexture;
+                        }
+                        else
+                        {
+                            stumpTexture = oakStumpTexture;
+                        }
                         SDL_RenderCopyEx(
                             renderer,
                             stumpTexture,
@@ -2908,14 +2945,21 @@ if (oakStumpTexture == nullptr)
                     if (playerUnderTree)
                     {
                         SDL_Texture* treeTexture;
-
                         if (treeTypes[i] == 0)
                         {
                             treeTexture = cypressTexture;
                         }
-                        else
+                        else if (treeTypes[i] == 1)
                         {
                             treeTexture = deadTexture;
+                        }
+                        else if (treeTypes[i] == 2)
+                        {
+                            treeTexture = mapleTexture;
+                        }
+                        else
+                        {
+                            treeTexture = oakTexture;
                         }
 
                         SDL_SetTextureAlphaMod(treeTexture, 128);
