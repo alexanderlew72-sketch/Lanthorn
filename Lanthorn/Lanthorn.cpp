@@ -573,6 +573,7 @@ if (oakStumpHitTexture == nullptr)
 
     int treeHits[TREE_COUNT] = {};
     int stumpHits[TREE_COUNT] = {};
+    bool stumpDestroyed[TREE_COUNT] = {};
     bool treeFalling[TREE_COUNT] = {};
     bool treeFallen[TREE_COUNT] = {};
     int treeFallFrame[TREE_COUNT] = {};
@@ -1476,7 +1477,10 @@ if (oakStumpHitTexture == nullptr)
     {
        
 
-        if (treeFallen[i])
+        if (
+            treeFallen[i] &&
+            !stumpDestroyed[i]
+            )
         {
             if (CheckCollision(
                 axeHitRect,
@@ -1544,7 +1548,10 @@ if (oakStumpHitTexture == nullptr)
                         for (int i = 0; i < TREE_COUNT; i++)
                         {
                             // treeTypes[i] == 0 means Tree 1
-                            if (treeFallen[i])
+                            if (
+                                treeFallen[i] &&
+                                !stumpDestroyed[i]
+                                )
                             {
                                 if (CheckCollision(
                                     axeHitRect,
@@ -1608,7 +1615,10 @@ if (oakStumpHitTexture == nullptr)
 
                         for (int i = 0; i < TREE_COUNT; i++)
                         {
-                            if (treeFallen[i])
+                            if (
+                                treeFallen[i] &&
+                                !stumpDestroyed[i]
+                                )
                             {
                                 if (CheckCollision(
                                     axeHitRect,
@@ -1653,7 +1663,10 @@ if (oakStumpHitTexture == nullptr)
 
                         for (int i = 0; i < TREE_COUNT; i++)
                         {
-                            if (treeFallen[i])
+                            if (
+                                treeFallen[i] &&
+                                !stumpDestroyed[i]
+                                )
                             {
                                 if (CheckCollision(
                                     axeHitRect,
@@ -1746,13 +1759,20 @@ if (oakStumpHitTexture == nullptr)
                 {
                     SDL_Rect currentTreeCollision;
 
-                    if (treeFallen[i])
+                    if (
+                        treeFallen[i] &&
+                        !stumpDestroyed[i]
+                        )
                     {
                         currentTreeCollision = stumpCollisionRects[i];
                     }
-                    else
+                    else if (!treeFallen[i])
                     {
                         currentTreeCollision = treeCollisionRects[i];
+                    }
+                    else
+                    {
+                        continue;
                     }
 
                     if (CheckCollision(
@@ -1806,13 +1826,20 @@ if (oakStumpHitTexture == nullptr)
                 {
                     SDL_Rect currentTreeCollision;
 
-                    if (treeFallen[i])
+                    if (
+                        treeFallen[i] &&
+                        !stumpDestroyed[i]
+                        )
                     {
                         currentTreeCollision = stumpCollisionRects[i];
                     }
-                    else
+                    else if (!treeFallen[i])
                     {
                         currentTreeCollision = treeCollisionRects[i];
+                    }
+                    else
+                    {
+                        continue;
                     }
 
                     if (CheckCollision(
@@ -1867,13 +1894,20 @@ if (oakStumpHitTexture == nullptr)
                 {
                     SDL_Rect currentTreeCollision;
 
-                    if (treeFallen[i])
+                    if (
+                        treeFallen[i] &&
+                        !stumpDestroyed[i]
+                        )
                     {
                         currentTreeCollision = stumpCollisionRects[i];
                     }
-                    else
+                    else if (!treeFallen[i])
                     {
                         currentTreeCollision = treeCollisionRects[i];
+                    }
+                    else
+                    {
+                        continue;
                     }
 
                     if (CheckCollision(
@@ -1926,13 +1960,20 @@ if (oakStumpHitTexture == nullptr)
                 {
                     SDL_Rect currentTreeCollision;
 
-                    if (treeFallen[i])
+                    if (
+                        treeFallen[i] &&
+                        !stumpDestroyed[i]
+                        )
                     {
                         currentTreeCollision = stumpCollisionRects[i];
                     }
-                    else
+                    else if (!treeFallen[i])
                     {
                         currentTreeCollision = treeCollisionRects[i];
+                    }
+                    else
+                    {
+                        continue;
                     }
 
                     if (CheckCollision(
@@ -2455,6 +2496,11 @@ if (oakStumpHitTexture == nullptr)
                     {
                         stumpHits[stumpHitThisSwing]++;
 
+                        if (stumpHits[stumpHitThisSwing] >= 8)
+                        {
+                            stumpDestroyed[stumpHitThisSwing] = true;
+                        }
+
                         stumpHitThisSwing = -1;
                     }
                 }
@@ -2642,7 +2688,10 @@ if (oakStumpHitTexture == nullptr)
                 
             
                 // FALLEN TREE = STUMP ONLY
-                if (treeFallen[i])
+                if (
+                    treeFallen[i] &&
+                    !stumpDestroyed[i]
+                    )
                 {
                     SDL_Rect stumpRect;
 
@@ -3035,7 +3084,10 @@ if (oakStumpHitTexture == nullptr)
                         : SDL_FLIP_NONE
                     );
                 }
-                else if (treeFallen[i])
+             else if (
+                 treeFallen[i] &&
+                 !stumpDestroyed[i]
+                 )
                 {
                     int playerBottom =
                         playerCollisionRect.y + playerCollisionRect.h;
