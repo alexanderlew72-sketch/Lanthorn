@@ -2207,7 +2207,19 @@ int main(int argc, char* argv[])
                 {
                     treeFallFrame[i]++;
 
-                    if (treeFallFrame[i] >= 9)
+                    if (
+                        treeTypes[i] == 1 &&
+                        treeFallFrame[i] >= 8
+                        )
+                    {
+                        treeFallFrame[i] = 7;
+                        treeFalling[i] = false;
+                        treeFallen[i] = true;
+                    }
+                    else if (
+                        treeTypes[i] == 0 &&
+                        treeFallFrame[i] >= 9
+                        )
                     {
                         treeFallFrame[i] = 8;
                         treeFalling[i] = false;
@@ -2510,7 +2522,7 @@ int main(int argc, char* argv[])
 
                     SDL_Rect treeFallRect;
 
-                    treeFallRect.w = 416;
+                    treeFallRect.w = 388;
                     treeFallRect.h = 356;
 
                     if (!treeFlipped[i])
@@ -2522,7 +2534,7 @@ int main(int argc, char* argv[])
                         else
                         {
                             treeFallRect.x =
-                                treeRects[i].x - ((104 - 35) * 4);
+                                treeRects[i].x - ((97 - 35) * 4);
                         }
                     }
                     else
@@ -2532,7 +2544,7 @@ int main(int argc, char* argv[])
                             // Reversed falling-right:
                             // far-right edge stays aligned with tree
                             treeFallRect.x =
-                                treeRects[i].x - ((104 - 35) * 4);
+                                treeRects[i].x - ((97 - 35) * 4);
                         }
                         else
                         {
@@ -2662,7 +2674,7 @@ int main(int argc, char* argv[])
 
                     SDL_Rect treeFallRect;
 
-                    treeFallRect.w = 416;
+                    treeFallRect.w = 388;
                     treeFallRect.h = 356;
 
                     if (!treeFlipped[i])
@@ -2674,7 +2686,7 @@ int main(int argc, char* argv[])
                         else
                         {
                             treeFallRect.x =
-                                treeRects[i].x - ((104 - 35) * 4);
+                                treeRects[i].x - ((97 - 35) * 4);
                         }
                     }
                     else
@@ -2682,7 +2694,7 @@ int main(int argc, char* argv[])
                         if (treeFallDirection[i] == 0)
                         {
                             treeFallRect.x =
-                                treeRects[i].x - ((104 - 35) * 4);
+                                treeRects[i].x - ((97 - 35) * 4);
                         }
                         else
                         {
