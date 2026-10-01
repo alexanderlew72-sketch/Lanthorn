@@ -1193,6 +1193,8 @@ if (oakStumpHitTexture == nullptr)
 
     int treeHitThisSwing = -1;
 
+    int stumpHitThisSwing = -1;
+
     SDL_Event event;
 
     while (running)
@@ -1474,9 +1476,18 @@ if (oakStumpHitTexture == nullptr)
     {
        
 
-        if (
-            !treeFalling[i] &&
-            !treeFallen[i])
+        if (treeFallen[i])
+        {
+            if (CheckCollision(
+                axeHitRect,
+                stumpCollisionRects[i]
+            ))
+            {
+                stumpHitThisSwing = i;
+                break;
+            }
+        }
+        else if (!treeFalling[i])
         {
             int playerCenterX =
                 playerCollisionRect.x +
@@ -1486,16 +1497,16 @@ if (oakStumpHitTexture == nullptr)
                 treeCollisionRects[i].x +
                 treeCollisionRects[i].w / 2;
 
-            // Player must be on RIGHT side of tree
             if (
                 playerCenterX > treeCenterX &&
                 CheckCollision(
                     axeHitRect,
                     treeCollisionRects[i]
                 )
-            )
+                )
             {
                 treeHitThisSwing = i;
+
                 if (treeFlipped[i])
                 {
                     treeFallDirection[i] = 0;
@@ -1504,6 +1515,7 @@ if (oakStumpHitTexture == nullptr)
                 {
                     treeFallDirection[i] = 1;
                 }
+
                 treeRandomFall[i] = false;
 
                 break;
@@ -1532,7 +1544,18 @@ if (oakStumpHitTexture == nullptr)
                         for (int i = 0; i < TREE_COUNT; i++)
                         {
                             // treeTypes[i] == 0 means Tree 1
-                            if (!treeFalling[i] && !treeFallen[i])
+                            if (treeFallen[i])
+                            {
+                                if (CheckCollision(
+                                    axeHitRect,
+                                    stumpCollisionRects[i]
+                                ))
+                                {
+                                    stumpHitThisSwing = i;
+                                    break;
+                                }
+                            }
+                            else if (!treeFalling[i])
                             {
                                 int playerCenterX =
                                     playerCollisionRect.x +
@@ -1542,7 +1565,6 @@ if (oakStumpHitTexture == nullptr)
                                     treeCollisionRects[i].x +
                                     treeCollisionRects[i].w / 2;
 
-                                // Player must be on the LEFT side of the tree
                                 if (
                                     playerCenterX < treeCenterX &&
                                     CheckCollision(
@@ -1552,6 +1574,7 @@ if (oakStumpHitTexture == nullptr)
                                     )
                                 {
                                     treeHitThisSwing = i;
+
                                     if (treeFlipped[i])
                                     {
                                         treeFallDirection[i] = 1;
@@ -1560,11 +1583,10 @@ if (oakStumpHitTexture == nullptr)
                                     {
                                         treeFallDirection[i] = 0;
                                     }
+
                                     treeRandomFall[i] = false;
-                                    // Only hit one tree per swing
                                     break;
                                 }
-                     
                             }
                         }
                     }
@@ -1586,9 +1608,18 @@ if (oakStumpHitTexture == nullptr)
 
                         for (int i = 0; i < TREE_COUNT; i++)
                         {
-                            if (
-                                !treeFalling[i] &&
-                                !treeFallen[i])
+                            if (treeFallen[i])
+                            {
+                                if (CheckCollision(
+                                    axeHitRect,
+                                    stumpCollisionRects[i]
+                                ))
+                                {
+                                    stumpHitThisSwing = i;
+                                    break;
+                                }
+                            }
+                            else if (!treeFalling[i])
                             {
                                 if (CheckCollision(
                                     axeHitRect,
@@ -1622,9 +1653,18 @@ if (oakStumpHitTexture == nullptr)
 
                         for (int i = 0; i < TREE_COUNT; i++)
                         {
-                            if (
-                                !treeFalling[i] &&
-                                !treeFallen[i])
+                            if (treeFallen[i])
+                            {
+                                if (CheckCollision(
+                                    axeHitRect,
+                                    stumpCollisionRects[i]
+                                ))
+                                {
+                                    stumpHitThisSwing = i;
+                                    break;
+                                }
+                            }
+                            else if (!treeFalling[i])
                             {
                                 if (CheckCollision(
                                     axeHitRect,
