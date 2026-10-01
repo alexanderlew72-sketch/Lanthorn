@@ -365,6 +365,102 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
+    SDL_Texture* mapleTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Maple.png"
+);
+
+SDL_Texture* mapleLeftTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/MapleLeft-Sheet.png"
+);
+
+SDL_Texture* mapleRightTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/MapleRight-Sheet.png"
+);
+
+SDL_Texture* mapleStumpTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/MapleStump.png"
+);
+
+if (mapleTexture == nullptr)
+{
+    std::cout << "Maple failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (mapleLeftTexture == nullptr)
+{
+    std::cout << "Maple left failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (mapleRightTexture == nullptr)
+{
+    std::cout << "Maple right failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (mapleStumpTexture == nullptr)
+{
+    std::cout << "Maple stump failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+SDL_Texture* oakTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Oak.png"
+);
+
+SDL_Texture* oakLeftTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/OakLeft-Sheet.png"
+);
+
+SDL_Texture* oakRightTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/OakRight-Sheet.png"
+);
+
+SDL_Texture* oakStumpTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/OakStump.png"
+);
+
+if (oakTexture == nullptr)
+{
+    std::cout << "Oak failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (oakLeftTexture == nullptr)
+{
+    std::cout << "Oak left failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (oakRightTexture == nullptr)
+{
+    std::cout << "Oak right failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (oakStumpTexture == nullptr)
+{
+    std::cout << "Oak stump failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
     SDL_Rect hotbarRect;
 
     hotbarRect.w = 656;
@@ -509,7 +605,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        treeTypes[i] = std::rand() % 2;
+        treeTypes[i] = std::rand() % 4;
         treeFlipped[i] = std::rand() % 2;
 
 
@@ -2614,9 +2710,17 @@ int main(int argc, char* argv[])
                         {
                             treeTexture = cypressTexture;
                         }
-                        else
+                        else if (treeTypes[i] == 1)
                         {
                             treeTexture = deadTexture;
+                        }
+                        else if (treeTypes[i] == 2)
+                        {
+                            treeTexture = mapleTexture;
+                        }
+                        else
+                        {
+                            treeTexture = oakTexture;
                         }
 
                         SDL_SetTextureAlphaMod(treeTexture, 255);
