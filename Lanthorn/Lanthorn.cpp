@@ -365,43 +365,6 @@ int main(int argc, char* argv[])
             << std::endl;
     }
 
-    SDL_Texture* stump1Texture = IMG_LoadTexture(
-        renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Stump1-Sheet.png"
-    );
-
-    if (stump1Texture == nullptr)
-    {
-        std::cout << "Stump 1 failed to load: "
-            << IMG_GetError()
-            << std::endl;
-    }
-
-    SDL_Texture* stump2Texture = IMG_LoadTexture(
-        renderer,
-        "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/Stump2-Sheet.png"
-    );
-
-    if (stump2Texture == nullptr)
-    {
-        std::cout << "Stump 2 failed to load: "
-            << IMG_GetError()
-            << std::endl;
-    }
-
-    if (treeFallingRightTexture == nullptr)
-    {
-        std::cout << "Tree falling right failed to load: "
-            << IMG_GetError()
-            << std::endl;
-    }
-    if (tree2Texture == nullptr)
-    {
-        std::cout << "Tree 2 failed to load: "
-            << IMG_GetError()
-            << std::endl;
-    }
-
     SDL_Rect hotbarRect;
 
     hotbarRect.w = 656;
@@ -2244,9 +2207,9 @@ int main(int argc, char* argv[])
                 {
                     treeFallFrame[i]++;
 
-                    if (treeFallFrame[i] >= 7)
+                    if (treeFallFrame[i] >= 9)
                     {
-                        treeFallFrame[i] = 6;
+                        treeFallFrame[i] = 8;
                         treeFalling[i] = false;
                         treeFallen[i] = true;
                     }
@@ -2508,11 +2471,11 @@ int main(int argc, char* argv[])
 
                         if (treeTypes[i] == 0)
                         {
-                            stumpTexture = stump1Texture;
+                            stumpTexture = cypressStumpTexture;
                         }
                         else
                         {
-                            stumpTexture = stump2Texture;
+                            stumpTexture = deadStumpTexture;
                         }
 
                         SDL_RenderCopyEx(
@@ -2540,9 +2503,9 @@ int main(int argc, char* argv[])
                 {
                     SDL_Rect treeFallSourceRect;
 
-                    treeFallSourceRect.x = treeFallFrame[i] * 104;
+                    treeFallSourceRect.x = treeFallFrame[i] * 97;
                     treeFallSourceRect.y = 0;
-                    treeFallSourceRect.w = 104;
+                    treeFallSourceRect.w = 97;
                     treeFallSourceRect.h = 89;
 
                     SDL_Rect treeFallRect;
@@ -2590,22 +2553,22 @@ int main(int argc, char* argv[])
                     {
                         if (treeFallDirection[i] == 0)
                         {
-                            fallingTexture = treeFallingRightTexture;
+                            fallingTexture = cypressRightTexture;
                         }
                         else
                         {
-                            fallingTexture = treeFallingLeftTexture;
+                            fallingTexture = cypressLeftTexture;
                         }
                     }
                     else
                     {
                         if (treeFallDirection[i] == 0)
                         {
-                            fallingTexture = tree2FallingRightTexture;
+                            fallingTexture = deadRightTexture;
                         }
                         else
                         {
-                            fallingTexture = tree2FallingLeftTexture;
+                            fallingTexture = deadLeftTexture;
                         }
                     }
 
@@ -2637,11 +2600,11 @@ int main(int argc, char* argv[])
 
                         if (treeTypes[i] == 0)
                         {
-                            treeTexture = tree1Texture;
+                            treeTexture = cypressTexture;
                         }
                         else
                         {
-                            treeTexture = tree2Texture;
+                            treeTexture = deadTexture;
                         }
 
                         SDL_SetTextureAlphaMod(treeTexture, 255);
@@ -2692,9 +2655,9 @@ int main(int argc, char* argv[])
                 {
                     SDL_Rect treeFallSourceRect;
 
-                    treeFallSourceRect.x = treeFallFrame[i] * 104;
+                    treeFallSourceRect.x = treeFallFrame[i] * 97;
                     treeFallSourceRect.y = 0;
-                    treeFallSourceRect.w = 104;
+                    treeFallSourceRect.w = 97;
                     treeFallSourceRect.h = 89;
 
                     SDL_Rect treeFallRect;
@@ -2736,22 +2699,22 @@ int main(int argc, char* argv[])
                     {
                         if (treeFallDirection[i] == 0)
                         {
-                            fallingTexture = treeFallingRightTexture;
+                            fallingTexture = cypressRightTexture;
                         }
                         else
                         {
-                            fallingTexture = treeFallingLeftTexture;
+                            fallingTexture = cypressLeftTexture;
                         }
                     }
                     else
                     {
                         if (treeFallDirection[i] == 0)
                         {
-                            fallingTexture = tree2FallingRightTexture;
+                            fallingTexture = deadRightTexture;
                         }
                         else
                         {
-                            fallingTexture = tree2FallingLeftTexture;
+                            fallingTexture = deadLeftTexture;
                         }
                     }
 
@@ -2799,11 +2762,11 @@ int main(int argc, char* argv[])
 
                         if (treeTypes[i] == 0)
                         {
-                            stumpTexture = stump1Texture;
+                            stumpTexture = cypressStumpTexture;
                         }
                         else
                         {
-                            stumpTexture = stump2Texture;
+                            stumpTexture = deadStumpTexture;
                         }
 
                         SDL_RenderCopyEx(
@@ -2832,11 +2795,11 @@ int main(int argc, char* argv[])
 
                         if (treeTypes[i] == 0)
                         {
-                            treeTexture = tree1Texture;
+                            treeTexture = cypressTexture;
                         }
                         else
                         {
-                            treeTexture = tree2Texture;
+                            treeTexture = deadTexture;
                         }
 
                         SDL_SetTextureAlphaMod(treeTexture, 128);
