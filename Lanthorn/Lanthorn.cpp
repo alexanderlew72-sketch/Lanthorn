@@ -524,6 +524,7 @@ if (oakStumpTexture == nullptr)
     bool treeFlipped[TREE_COUNT];
 
     int treeHits[TREE_COUNT] = {};
+    int stumpHits[TREE_COUNT] = {};
     bool treeFalling[TREE_COUNT] = {};
     bool treeFallen[TREE_COUNT] = {};
     int treeFallFrame[TREE_COUNT] = {};
@@ -2852,7 +2853,7 @@ if (oakStumpTexture == nullptr)
                             fallingTexture = cypressLeftTexture;
                         }
                     }
-                    else
+                    else if (treeTypes[i] == 1)
                     {
                         if (treeFallDirection[i] == 0)
                         {
@@ -2861,6 +2862,28 @@ if (oakStumpTexture == nullptr)
                         else
                         {
                             fallingTexture = deadLeftTexture;
+                        }
+                    }
+                    else if (treeTypes[i] == 2)
+                    {
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = mapleRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = mapleLeftTexture;
+                        }
+                    }
+                    else
+                    {
+                        if (treeFallDirection[i] == 0)
+                        {
+                            fallingTexture = oakRightTexture;
+                        }
+                        else
+                        {
+                            fallingTexture = oakLeftTexture;
                         }
                     }
 
