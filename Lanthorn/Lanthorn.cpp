@@ -2451,6 +2451,12 @@ if (oakStumpHitTexture == nullptr)
 
                         treeHitThisSwing = -1;
                     }
+                    if (stumpHitThisSwing != -1)
+                    {
+                        stumpHits[stumpHitThisSwing]++;
+
+                        stumpHitThisSwing = -1;
+                    }
                 }
 
                 lastFrameTime = currentTime;
@@ -2665,28 +2671,70 @@ if (oakStumpHitTexture == nullptr)
                         playerBottom >= stumpBottom)
                     {
                         SDL_Texture* stumpTexture;
+                       
+                        SDL_Rect stumpSourceRect;
 
-                        if (treeTypes[i] == 0)
+                        stumpSourceRect.y = 0;
+                        stumpSourceRect.w = 35;
+                        stumpSourceRect.h = 89;
+
+                        int stumpFrame = stumpHits[i] - 1;
+
+                        if (stumpFrame < 0)
                         {
-                            stumpTexture = cypressStumpTexture;
+                            stumpFrame = 0;
                         }
-                        else if (treeTypes[i] == 1)
+
+                        if (stumpFrame > 5)
                         {
-                            stumpTexture = deadStumpTexture;
+                            stumpFrame = 5;
                         }
-                        else if (treeTypes[i] == 2)
+
+                        stumpSourceRect.x = stumpFrame * 35;
+
+                        if (stumpHits[i] == 0)
                         {
-                            stumpTexture = mapleStumpTexture;
+                            if (treeTypes[i] == 0)
+                            {
+                                stumpTexture = cypressStumpTexture;
+                            }
+                            else if (treeTypes[i] == 1)
+                            {
+                                stumpTexture = deadStumpTexture;
+                            }
+                            else if (treeTypes[i] == 2)
+                            {
+                                stumpTexture = mapleStumpTexture;
+                            }
+                            else
+                            {
+                                stumpTexture = oakStumpTexture;
+                            }
                         }
                         else
                         {
-                            stumpTexture = oakStumpTexture;
+                            if (treeTypes[i] == 0)
+                            {
+                                stumpTexture = cypressStumpHitTexture;
+                            }
+                            else if (treeTypes[i] == 1)
+                            {
+                                stumpTexture = deadStumpHitTexture;
+                            }
+                            else if (treeTypes[i] == 2)
+                            {
+                                stumpTexture = mapleStumpHitTexture;
+                            }
+                            else
+                            {
+                                stumpTexture = oakStumpHitTexture;
+                            }
                         }
 
                         SDL_RenderCopyEx(
                             renderer,
                             stumpTexture,
-                            nullptr,
+                            stumpHits[i] == 0 ? nullptr : &stumpSourceRect,
                             &stumpRect,
                             0.0,
                             nullptr,
