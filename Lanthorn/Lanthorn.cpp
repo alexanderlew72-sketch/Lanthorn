@@ -461,6 +461,54 @@ if (oakStumpTexture == nullptr)
         << std::endl;
 }
 
+SDL_Texture* cypressStumpHitTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/CypressStumpHit-Sheet.png"
+);
+
+SDL_Texture* deadStumpHitTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/DeadStumpHit-Sheet.png"
+);
+
+SDL_Texture* mapleStumpHitTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/MapleStumpHit-Sheet.png"
+);
+
+SDL_Texture* oakStumpHitTexture = IMG_LoadTexture(
+    renderer,
+    "C:/Users/lewir/source/repos/Lanthorn/Lanthorn/assets/OakStumpHit-Sheet.png"
+);
+
+if (cypressStumpHitTexture == nullptr)
+{
+    std::cout << "Cypress stump hit failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (deadStumpHitTexture == nullptr)
+{
+    std::cout << "Dead stump hit failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (mapleStumpHitTexture == nullptr)
+{
+    std::cout << "Maple stump hit failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
+if (oakStumpHitTexture == nullptr)
+{
+    std::cout << "Oak stump hit failed to load: "
+        << IMG_GetError()
+        << std::endl;
+}
+
     SDL_Rect hotbarRect;
 
     hotbarRect.w = 656;
